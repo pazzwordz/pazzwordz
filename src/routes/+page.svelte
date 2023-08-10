@@ -1,32 +1,10 @@
 <script>
     export let data
-    let {supabase} = data
-    $: ({supabase} = data)
-
-    let email
-    let password
-
-
-    const handleSignUp = async () => {
-        await supabase.auth.signUp({
-            email,
-            password,
-            options: {
-                emailRedirectTo: `${location.origin}/auth/callback`,
-            },
-        })
-    }
-
-    const handleSignIn = async () => {
-        await supabase.auth.signInWithPassword({
-            email,
-            password,
-        })
-    }
 
     const handleSignOut = async () => {
-        await supabase.auth.signOut()
+        await data.supabase.auth.signOut()
     }
+
     // import kyber from 'crystals-kyber';
 
     // // To generate a public and private key pair (pk, sk)
@@ -43,12 +21,3 @@
     // let ss2 = kyber.Decrypt768(c, sk);
 
 </script>
-
-<form on:submit="{handleSignUp}">
-    <input name="email" bind:value="{email}"/>
-    <input type="password" name="password" bind:value="{password}"/>
-    <button>Sign up</button>
-</form>
-
-<button on:click="{handleSignIn}">Sign in</button>
-<button on:click="{handleSignOut}">Sign out</button>
