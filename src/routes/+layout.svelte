@@ -2,7 +2,7 @@
     import "../app.css";
 </script>
 
-<div class="app">
+<div class="app bg-neutral-500">
     <main>
         <slot/>
     </main>
