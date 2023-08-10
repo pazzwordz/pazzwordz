@@ -1,4 +1,8 @@
 <script lang="ts">
+    import type {SupabaseClient} from "@supabase/supabase-js";
+    import type {Database} from "$lib/database.types";
+    import {goto} from "$app/navigation";
+
     export let data: PageData;
 
     let loading = false;
@@ -17,13 +21,22 @@
             if (response.error) {
                 errorMessage = response.error.message;
             }
+            const user = response.data!.user;
+            const newId = user.id;
+            const supabase = data.supabase as SupabaseClient<Database>;
+            //ToDo: salt->hash->pepper->db should be done server side,
+            // generate salt and pepper based on user data deterministically
+            supabase.from("VaultKey").insert({
+                id: newId,
+                vaultKeyHash: vaultPassword
+            })
+            goto("/login")
         } catch (error) {
         } finally {
             loading = false;
         }
     }
 </script>
-
 <section class="w-full h-screen flex items-center justify-center overflow-clip">
     <div class="w-full rounded-lg shadow border md:mt-0 sm:max-w-md xl:p-0 bg-gray-800 border-gray-700">
         <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
