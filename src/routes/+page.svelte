@@ -1,17 +1,38 @@
-<script lang="ts">
-    export let data;
+<script>
+    export let data
+    let { supabase } = data
+    $: ({ supabase } = data)
 
-    let clearText: string;
-    let encrypted: string = "";
+    let email
+    let password
 
-    function encrypt() {
-        encrypted = clearText;
+    const handleSignUp = async () => {
+        await supabase.auth.signUp({
+            email,
+            password,
+            options: {
+                emailRedirectTo: `${location.origin}/auth/callback`,
+            },
+        })
+    }
+
+    const handleSignIn = async () => {
+        await supabase.auth.signInWithPassword({
+            email,
+            password,
+        })
+    }
+
+    const handleSignOut = async () => {
+        await supabase.auth.signOut()
     }
 </script>
-<div class="p-8">
-    <div class="flex gap-2">
-        <input bind:value={clearText} class="px-4 py-2 border">
-        <button on:click={encrypt} class="bg-neutral-900 p-4 text-white font-medium">Encrypt</button>
-    </div>
-    <span>{encrypted}</span>
-</div>
+
+<form on:submit="{handleSignUp}">
+    <input name="email" bind:value="{email}" />
+    <input type="password" name="password" bind:value="{password}" />
+    <button>Sign up</button>
+</form>
+
+<button on:click="{handleSignIn}">Sign in</button>
+<button on:click="{handleSignOut}">Sign out</button>
