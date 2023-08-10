@@ -3,7 +3,6 @@
     import {onMount} from 'svelte'
     import "../app.css"
     import Navbar from "$lib/components/Navbar.svelte";
-
     export let data
 
     let {supabase, session} = data
