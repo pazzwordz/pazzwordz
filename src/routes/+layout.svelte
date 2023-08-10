@@ -22,7 +22,7 @@
 </script>
 
 <div class="relative px-[10vw] bg-base-100 h-[200vh]">
-    <Navbar/>
+    <Navbar supabase={supabase}/>
     <main>
         <slot/>
     </main>
