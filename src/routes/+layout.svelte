@@ -6,7 +6,7 @@
     import Footer from "$lib/components/Footer.svelte";
     import FingerprintJS from "$lib/scripts/fp.js";
     import {fingerprintStore} from "$lib/stores";
-    import {DataLayerLocal} from "$lib/DataLayer";
+    import {DataLayerLocal} from "$lib/persistent/DataLayer";
 
     export let data
 

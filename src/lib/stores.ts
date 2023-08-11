@@ -1,11 +1,10 @@
 import {derived, writable} from "svelte/store";
 import {persisted} from "$lib/persisted";
 import {decryptHex, encryptText} from "$lib/crypto";
-import type {DataLayerLocal} from "$lib/DataLayer";
+import type {DataLayerLocal} from "$lib/persistent/DataLayer";
 
 interface Serializer<T> {
     parse(text: string): T
-
     stringify(object: T): string
 }
 
@@ -24,26 +23,48 @@ const uint8Serializer: Serializer<Uint8Array | null> = {
     }
 }
 
-export function setVaultKey(plainKey: string, otpKey: Uint8Array) {
-    otpKeyStore.set(otpKey);
-    const encrypted = encryptText(plainKey, otpKey)
-    vaultKeyStoreInternal.set(encrypted)
-}
-
 export const fingerprintStore = writable<string>(undefined);
 
-const vaultKeyStoreInternal = persisted<string | null>("vaultKey", null, {
+export function setVaultKeyCloud(plainKey: string, otpKey: Uint8Array) {
+    otpKeyStoreCloud.set(otpKey);
+    const encrypted = encryptText(plainKey, otpKey)
+    vaultKeyStoreCloudInternal.set(encrypted)
+}
+
+export function setVaultKeyLocal(plainKey: string, otpKey: Uint8Array) {
+    otpKeyStoreLocal.set(otpKey);
+    const encrypted = encryptText(plainKey, otpKey)
+    vaultKeyStoreLocalInternal.set(encrypted)
+}
+
+
+const vaultKeyStoreCloudInternal = persisted<string | null>("vaultKeyCloud", null, {
+    storage: "session",
+})
+
+const vaultKeyStoreLocalInternal = persisted<string | null>("vaultKeyLocal", null, {
     storage: "session",
 })
 
 //@ts-ignore
-const otpKeyStore = persisted<Uint8Array | null>("otpKey", null, {
+const otpKeyStoreCloud = persisted<Uint8Array | null>("otpKeyCloud", null, {
     serializer: uint8Serializer,
     storage: "session"
 })
 
+const otpKeyStoreLocal = persisted<Uint8Array | null>("otpKeyLocal", null, {
+    serializer: uint8Serializer,
+    storage: "session"
+})
 
-export const vaultKeyStore = derived([vaultKeyStoreInternal, otpKeyStore],
+export const vaultKeyStoreCloud = derived([vaultKeyStoreCloudInternal, otpKeyStoreCloud],
+    ([$vaultKeyStoreInternal, $otpKeyStore]) => {
+        if ($otpKeyStore == null || $vaultKeyStoreInternal == null)
+            return null
+        return decryptHex($vaultKeyStoreInternal!, $otpKeyStore!)
+    });
+
+export const vaultKeyStoreLocal = derived([vaultKeyStoreLocalInternal, otpKeyStoreLocal],
     ([$vaultKeyStoreInternal, $otpKeyStore]) => {
         if ($otpKeyStore == null || $vaultKeyStoreInternal == null)
             return null

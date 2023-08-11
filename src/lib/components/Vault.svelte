@@ -1,14 +1,14 @@
 <script lang="ts">
     import type {PasswordEntryView} from "$lib/types";
-    import {setVaultKey, vaultKeyStore} from "$lib/stores";
+    import {setVaultKeyCloud, setVaultKeyLocal, vaultKeyStoreCloud, vaultKeyStoreLocal} from "$lib/stores";
     import {decryptHex, deriveKey, generateOtpKey, sha256HashHex} from "$lib/crypto";
     import {onMount} from "svelte";
     import {routes} from "$lib/navRoutes";
-    import type {DataLayer} from "$lib/DataLayer";
+    import type {DataLayer} from "$lib/persistent/DataLayer";
     import {copyToClipboard} from "$lib/functions";
     import {faCopy, faEye, faEyeSlash} from "@fortawesome/free-solid-svg-icons";
     import Fa from "svelte-fa"
-    import {DataLayerCloud, DataLayerLocal} from "$lib/DataLayer";
+    import {DataLayerCloud, DataLayerLocal} from "$lib/persistent/DataLayer";
     import type {Database} from "$lib/database.types";
     import type {SupabaseClient} from "@supabase/supabase-js";
 
@@ -18,6 +18,19 @@
     export let userId: string | undefined = undefined
 
     let dataLayer: DataLayer;
+
+    let usedVaultKeyStore;
+    let setKeyFunction: Function;
+
+    $: {
+        if (supabase) {
+            usedVaultKeyStore = vaultKeyStoreCloud;
+            setKeyFunction = setVaultKeyCloud
+        } else {
+            usedVaultKeyStore = vaultKeyStoreLocal;
+            setKeyFunction = setVaultKeyLocal
+        }
+    }
 
     let entries = new Array<PasswordEntryView>;
     let vaultKeyInput: string | undefined;
@@ -29,10 +42,12 @@
 
 
     onMount(async () => {
-        if (supabase)
+        if (supabase) {
             dataLayer = new DataLayerCloud(supabase, userId!)
-        else
+        } else {
             dataLayer = new DataLayerLocal();
+        }
+
         refreshEntries();
     })
 
@@ -42,7 +57,7 @@
 
     async function decryptPasswordOnly(entry: PasswordEntryView) {
         const encryptedText = await dataLayer.getEncryptedText(entry.id);
-        const key = deriveKey($vaultKeyStore!, 'sussysecretsalt');
+        const key = deriveKey($usedVaultKeyStore!, 'sussysecretsalt');
         return decryptHex(encryptedText, key);
     }
 
@@ -61,7 +76,8 @@
 
     async function unlockVault() {
         if (await dataLayer.isValidVaultKeyHash(sha256HashHex(vaultKeyInput!))) {
-            setVaultKey(vaultKeyInput!, generateOtpKey())
+            console.log("is valid")
+            setKeyFunction(vaultKeyInput!, generateOtpKey())
         } else {
             console.log("wrong vault key")
         }
@@ -69,7 +85,7 @@
     }
 
     async function addPassword() {
-        const entry = await dataLayer.createPasswordEntry($vaultKeyStore!, addPazzPass!, addPazzName!, addPazzUser!)
+        const entry = await dataLayer.createPasswordEntry($usedVaultKeyStore!, addPazzPass!, addPazzName!, addPazzUser!)
         entries.push(entry)
         entries = entries;
         addPazzName = undefined;
@@ -120,7 +136,7 @@
     </div>
     <div class="divider divider-vertical lg:divider-horizontal"/>
     <div class="w-full relative">
-        {#if $vaultKeyStore == null}
+        {#if $usedVaultKeyStore == null}
             <div class="absolute top-0 left-0 bg-base-100/90 w-full h-full flex flex-col gap-8 items-center justify-center z-10 text-center">
                 <b class="text-4xl">Master Password Not Set</b>
                 <form class="join" on:submit={unlockVault}>

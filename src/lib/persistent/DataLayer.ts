@@ -54,7 +54,7 @@ export class DataLayerCloud implements DataLayer {
     }
 }
 
-import {MemoryStorage, TypedStorage} from "$lib/storageApi";
+import {MemoryStorage, TypedStorage} from "$lib/persistent/storageApi";
 import type {PasswordEntry} from "$lib/types";
 
 interface AppStorageSchema {
@@ -76,7 +76,7 @@ export class DataLayerLocal implements DataLayer {
         if (!storageData) {
             storageData = {
                 passwords: new Array<PasswordEntry>,
-                vaultKeyHash: JSON.stringify(sha256HashHex("sussy123"))
+                vaultKeyHash: sha256HashHex("sussy123")
             }
         }
         this.data = storageData

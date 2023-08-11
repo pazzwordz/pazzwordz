@@ -1,7 +1,7 @@
 <script lang="ts">
     import type {PageData} from "./$types";
     import Vault from "$lib/components/Vault.svelte";
-    import {DataLayerCloud} from "$lib/DataLayer";
+    import {DataLayerCloud} from "$lib/persistent/DataLayer";
 
     export let data: PageData;
 
