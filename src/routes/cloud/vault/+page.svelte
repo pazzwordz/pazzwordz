@@ -13,9 +13,16 @@
 
     let vaults = [{name: "Vault 1"}];
     export let data: PageData;
-    const userId = data.session!.user.id;
 
+    const userId = data.session!.user.id;
     let entries = new Array<PasswordEntryView>;
+    let vaultKeyInput: string | undefined;
+    let pazzView = 0;
+
+    let addPazzName: string | undefined = undefined;
+    let addPazzUser: string | undefined = undefined;
+    let addPazzPass: string | undefined = undefined;
+
 
     onMount(() => {
         refreshEntries();
@@ -42,8 +49,6 @@
         entries = entries
     }
 
-    let vaultKeyInput: string | undefined;
-
     async function isValidVaultKeyHash(hash: string) {
         const response = await data.supabase.from("VaultKey").select("vaultKeyHash").eq("id", userId)
         const realVaultKey = response.data![0].vaultKeyHash
@@ -60,8 +65,11 @@
         vaultKeyInput = undefined;
     }
 
-    let pazzView = 0;
-
+    async function addPassword() {
+        addPazzName = undefined;
+        addPazzUser = undefined;
+        addPazzPass = undefined;
+    }
 
 </script>
 
@@ -74,7 +82,7 @@
             <span>Back</span>
         </a>
         <div class="flex flex-col gap-4 h-[75%] overflow-y-scroll no-scrollbar">
-            <input class="input input-bordered join-item w-64" placeholder="Search"/>
+            <input class="input input-bordered w-64" placeholder="Search"/>
             <div class="join">
                 <button class="btn join-item pointer-events-none">View</button>
                 <select class="select select-bordered join-item w-full" bind:value={pazzView}>
@@ -83,7 +91,13 @@
                 </select>
             </div>
         </div>
-        <button class="btn btn-success btn-outline w-64">Add Pazzword</button>
+        <form class="flex flex-col gap-4" on:submit={addPassword}>
+            <p class="font-medium text-lg">Add Pazzword</p>
+            <input class="input input-bordered w-64" placeholder="Name" bind:value={addPazzName}/>
+            <input class="input input-bordered w-64" placeholder="User" bind:value={addPazzUser}/>
+            <input class="input input-bordered w-64" placeholder="Password" bind:value={addPazzPass}/>
+            <button class="btn btn-success btn-outline w-64" disabled="{addPazzName === undefined || addPazzUser === undefined || addPazzPass === undefined}">Add Pazzword</button>
+        </form>
     </div>
     <div class="divider divider-vertical lg:divider-horizontal"/>
     <div class="w-full relative">
