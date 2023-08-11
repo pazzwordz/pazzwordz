@@ -1,11 +1,18 @@
 <script>
     import {routes} from "$lib/navRoutes";
+    import Fa from "svelte-fa";
+    import {faCloud, faComputer, faServer} from "@fortawesome/free-solid-svg-icons";
 </script>
-<div class="grid lg:grid-cols-3 gap-8 pb-8">
-    <div class="hero bg-base-200 rounded-xl">
+
+<div class="grid lg:grid-cols-3 gap-8 pb-8  my-16">
+    <div class="hero bg-base-200 rounded-xl py-4">
         <div class="hero-content text-center">
             <div class="max-w-md">
-                <h1 class="text-5xl font-bold uppercase text-primary">Local</h1>
+                <div class="flex flex-col items-center justify-center gap-4 w-full text-primary">
+                    <Fa icon="{faComputer}" class="text-5xl"/>
+                    <h2 class="text-5xl font-bold uppercase">Local</h2>
+                </div>
+
                 <div class="min-h-[15rem] flex items-center">
                     <table class="table table-sm my-8">
                         <tbody>
@@ -34,10 +41,13 @@
         </div>
     </div>
 
-    <div class="hero h-[50vh] bg-base-200 rounded-xl">
+    <div class="hero bg-base-200 rounded-xl py-4">
         <div class="hero-content text-center">
             <div class="max-w-md">
-                <h1 class="text-5xl font-bold  uppercase text-info">Cloud</h1>
+                <div class="flex flex-col items-center justify-center gap-4 w-full text-info">
+                    <Fa icon="{faCloud}" class="text-5xl"/>
+                    <h2 class="text-5xl font-bold uppercase">Cloud</h2>
+                </div>
                 <div class="min-h-[15rem] flex items-center">
                     <table class="table table-sm my-8">
                         <tbody>
@@ -64,10 +74,13 @@
             </div>
         </div>
     </div>
-    <div class="hero h-[50vh] bg-base-200 rounded-xl">
+    <div class="hero bg-base-200 rounded-xl py-4">
         <div class="hero-content text-center">
             <div class="max-w-md">
-                <h1 class="text-5xl font-bold uppercase">Self-Hosted</h1>
+                <div class="flex flex-col items-center justify-center gap-4 w-full">
+                    <Fa icon="{faServer}" class="text-5xl"/>
+                    <h2 class="text-5xl font-bold uppercase">Self-Hosted</h2>
+                </div>
                 <div class="min-h-[15rem] flex items-center">
                     <table class="table table-sm my-8">
                         <tbody>

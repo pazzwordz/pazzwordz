@@ -1,4 +1,5 @@
 export const routes = {
+    pricing: "/#pricing",
     local: "/local",
     cloud: {
         cloud: "/cloud",
