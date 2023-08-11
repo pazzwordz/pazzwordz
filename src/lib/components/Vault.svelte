@@ -1,11 +1,13 @@
 <script lang="ts">
-    import type {PasswordEntryView, Row} from "$lib/types";
+    import type {PasswordEntryView} from "$lib/types";
     import {setVaultKey, vaultKeyStore} from "$lib/stores";
-    import {decryptHex, deriveKey, encryptText, generateOtpKey, sha256HashHex} from "$lib/crypto";
+    import {decryptHex, deriveKey, generateOtpKey, sha256HashHex} from "$lib/crypto";
     import {onMount} from "svelte";
     import {routes} from "$lib/navRoutes";
     import type {DataLayer} from "$lib/DataLayer";
-
+    import {copyToClipboard} from "$lib/functions";
+    import {faCopy, faEye, faEyeSlash} from "@fortawesome/free-solid-svg-icons";
+    import Fa from "svelte-fa"
     let decryptedEntries = new Map<string, string>();
 
     export let dataLayer: DataLayer;
@@ -27,14 +29,24 @@
         entries = await dataLayer.getPasswordEntries();
     }
 
-    async function decrypt(entry: PasswordEntryView) {
+    async function decryptPasswordOnly(entry: PasswordEntryView) {
         const encryptedText = await dataLayer.getEncryptedText(entry.id);
         const key = deriveKey($vaultKeyStore!, 'sussysecretsalt');
-        const password = decryptHex(encryptedText, key);
+        return decryptHex(encryptedText, key);
+    }
+
+    async function showDecrypt(entry: PasswordEntryView) {
+        const password = await decryptPasswordOnly(entry);
         decryptedEntries.set(entry.id, password)
         decryptedEntries = decryptedEntries
         entries = entries
     }
+
+    async function hideDecrypt(entry: PasswordEntryView) {
+        decryptedEntries.delete(entry.id)
+        decryptedEntries = decryptedEntries
+    }
+
 
     async function unlockVault() {
         if (await dataLayer.isValidVaultKeyHash(sha256HashHex(vaultKeyInput!))) {
@@ -54,13 +66,23 @@
         addPazzPass = undefined;
     }
 
+
+    async function pwToClipboard(entry: PasswordEntryView) {
+        let password = decryptedEntries.get(entry.id)
+        if(!password)
+            password = await decryptPasswordOnly(entry)
+        copyToClipboard(password);
+    }
+
 </script>
 
 <div class="w-full flex flex-col lg:flex-row gap-4 lg:p-8 h-[80vh]">
     <div class="lg:w-1/5 flex flex-col items-center gap-4">
         <a class="btn w-64 btn-outline flex gap-2 items-center" href={routes.cloud}>
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="stroke-current" viewBox="0 0 16 16">
-                <path fill-rule="evenodd" d="M12.5 15a.5.5 0 0 1-.5-.5v-13a.5.5 0 0 1 1 0v13a.5.5 0 0 1-.5.5zM10 8a.5.5 0 0 1-.5.5H3.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L3.707 7.5H9.5a.5.5 0 0 1 .5.5z"/>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="stroke-current"
+                 viewBox="0 0 16 16">
+                <path fill-rule="evenodd"
+                      d="M12.5 15a.5.5 0 0 1-.5-.5v-13a.5.5 0 0 1 1 0v13a.5.5 0 0 1-.5.5zM10 8a.5.5 0 0 1-.5.5H3.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L3.707 7.5H9.5a.5.5 0 0 1 .5.5z"/>
             </svg>
             <span>Back</span>
         </a>
@@ -79,7 +101,10 @@
             <input class="input input-bordered w-64" placeholder="Name" bind:value={addPazzName}/>
             <input class="input input-bordered w-64" placeholder="User" bind:value={addPazzUser}/>
             <input class="input input-bordered w-64" placeholder="Password" bind:value={addPazzPass}/>
-            <button class="btn btn-success btn-outline w-64" disabled="{addPazzName === undefined || addPazzUser === undefined || addPazzPass === undefined}">Add Pazzword</button>
+            <button class="btn btn-success btn-outline w-64"
+                    disabled="{addPazzName === undefined || addPazzUser === undefined || addPazzPass === undefined}">Add
+                Pazzword
+            </button>
         </form>
     </div>
     <div class="divider divider-vertical lg:divider-horizontal"/>
@@ -90,7 +115,8 @@
                 <form class="join" on:submit={unlockVault}>
                     <div>
                         <div>
-                            <input class="input input-bordered join-item" bind:value={vaultKeyInput} placeholder="Vault Key"/>
+                            <input class="input input-bordered join-item" bind:value={vaultKeyInput}
+                                   placeholder="Vault Key"/>
                         </div>
                     </div>
                     <button class="btn join-item">Unlock</button>
@@ -100,12 +126,13 @@
         <h2 class="text-4xl font-bold">Your Pazzwordz</h2>
         <div class="lg:h-[95%] overflow-y-scroll">
             {#if pazzView === 0}
-                <table class="table table-zebra mt-4">
+                <table class="table table-zebra table-fixed mt-4">
                     <thead>
                     <tr>
                         <td>Name</td>
                         <td>User</td>
                         <td>Password</td>
+                        <td></td>
                     </tr>
                     </thead>
                     <tbody>
@@ -114,27 +141,38 @@
                             <td>{entry.name}</td>
                             <td class="flex gap-2 items-center">
                                 <span>{entry.user}</span>
-                                <button class="btn btn-xs btn-outline btn-square border-none">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="stroke-current" viewBox="0 0 115.77 122.88">
-                                        <path class="st0" d="M89.62,13.96v7.73h12.19h0.01v0.02c3.85,0.01,7.34,1.57,9.86,4.1c2.5,2.51,4.06,5.98,4.07,9.82h0.02v0.02 v73.27v0.01h-0.02c-0.01,3.84-1.57,7.33-4.1,9.86c-2.51,2.5-5.98,4.06-9.82,4.07v0.02h-0.02h-61.7H40.1v-0.02 c-3.84-0.01-7.34-1.57-9.86-4.1c-2.5-2.51-4.06-5.98-4.07-9.82h-0.02v-0.02V92.51H13.96h-0.01v-0.02c-3.84-0.01-7.34-1.57-9.86-4.1 c-2.5-2.51-4.06-5.98-4.07-9.82H0v-0.02V13.96v-0.01h0.02c0.01-3.85,1.58-7.34,4.1-9.86c2.51-2.5,5.98-4.06,9.82-4.07V0h0.02h61.7 h0.01v0.02c3.85,0.01,7.34,1.57,9.86,4.1c2.5,2.51,4.06,5.98,4.07,9.82h0.02V13.96L89.62,13.96z M79.04,21.69v-7.73v-0.02h0.02 c0-0.91-0.39-1.75-1.01-2.37c-0.61-0.61-1.46-1-2.37-1v0.02h-0.01h-61.7h-0.02v-0.02c-0.91,0-1.75,0.39-2.37,1.01 c-0.61,0.61-1,1.46-1,2.37h0.02v0.01v64.59v0.02h-0.02c0,0.91,0.39,1.75,1.01,2.37c0.61,0.61,1.46,1,2.37,1v-0.02h0.01h12.19V35.65 v-0.01h0.02c0.01-3.85,1.58-7.34,4.1-9.86c2.51-2.5,5.98-4.06,9.82-4.07v-0.02h0.02H79.04L79.04,21.69z M105.18,108.92V35.65v-0.02 h0.02c0-0.91-0.39-1.75-1.01-2.37c-0.61-0.61-1.46-1-2.37-1v0.02h-0.01h-61.7h-0.02v-0.02c-0.91,0-1.75,0.39-2.37,1.01 c-0.61,0.61-1,1.46-1,2.37h0.02v0.01v73.27v0.02h-0.02c0,0.91,0.39,1.75,1.01,2.37c0.61,0.61,1.46,1,2.37,1v-0.02h0.01h61.7h0.02 v0.02c0.91,0,1.75-0.39,2.37-1.01c0.61-0.61,1-1.46,1-2.37h-0.02V108.92L105.18,108.92z" id="mainIconPathAttribute"></path>
-                                    </svg>
+                                <button class="btn btn-xs btn-outline btn-square border-none"
+                                        on:click={() => copyToClipboard(entry.user)}>
+                                    <Fa icon={faCopy} class="stroke-current" size="lg"/>
                                 </button>
                             </td>
                             <td>
                                 {#if decryptedEntries.has(entry.id)}
                                     <div class="flex gap-2 items-center">
                                         <span>{decryptedEntries.get(entry.id)}</span>
-                                        <button class="btn btn-xs btn-outline btn-square border-none">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="stroke-current" viewBox="0 0 115.77 122.88">
-                                                <path class="st0" d="M89.62,13.96v7.73h12.19h0.01v0.02c3.85,0.01,7.34,1.57,9.86,4.1c2.5,2.51,4.06,5.98,4.07,9.82h0.02v0.02 v73.27v0.01h-0.02c-0.01,3.84-1.57,7.33-4.1,9.86c-2.51,2.5-5.98,4.06-9.82,4.07v0.02h-0.02h-61.7H40.1v-0.02 c-3.84-0.01-7.34-1.57-9.86-4.1c-2.5-2.51-4.06-5.98-4.07-9.82h-0.02v-0.02V92.51H13.96h-0.01v-0.02c-3.84-0.01-7.34-1.57-9.86-4.1 c-2.5-2.51-4.06-5.98-4.07-9.82H0v-0.02V13.96v-0.01h0.02c0.01-3.85,1.58-7.34,4.1-9.86c2.51-2.5,5.98-4.06,9.82-4.07V0h0.02h61.7 h0.01v0.02c3.85,0.01,7.34,1.57,9.86,4.1c2.5,2.51,4.06,5.98,4.07,9.82h0.02V13.96L89.62,13.96z M79.04,21.69v-7.73v-0.02h0.02 c0-0.91-0.39-1.75-1.01-2.37c-0.61-0.61-1.46-1-2.37-1v0.02h-0.01h-61.7h-0.02v-0.02c-0.91,0-1.75,0.39-2.37,1.01 c-0.61,0.61-1,1.46-1,2.37h0.02v0.01v64.59v0.02h-0.02c0,0.91,0.39,1.75,1.01,2.37c0.61,0.61,1.46,1,2.37,1v-0.02h0.01h12.19V35.65 v-0.01h0.02c0.01-3.85,1.58-7.34,4.1-9.86c2.51-2.5,5.98-4.06,9.82-4.07v-0.02h0.02H79.04L79.04,21.69z M105.18,108.92V35.65v-0.02 h0.02c0-0.91-0.39-1.75-1.01-2.37c-0.61-0.61-1.46-1-2.37-1v0.02h-0.01h-61.7h-0.02v-0.02c-0.91,0-1.75,0.39-2.37,1.01 c-0.61,0.61-1,1.46-1,2.37h0.02v0.01v73.27v0.02h-0.02c0,0.91,0.39,1.75,1.01,2.37c0.61,0.61,1.46,1,2.37,1v-0.02h0.01h61.7h0.02 v0.02c0.91,0,1.75-0.39,2.37-1.01c0.61-0.61,1-1.46,1-2.37h-0.02V108.92L105.18,108.92z" id="mainIconPathAttribute"></path>
-                                            </svg>
-                                        </button>
                                     </div>
                                 {:else }
-                                    <div>
-                                        <button class="btn btn-xs btn-outline" on:click={() => decrypt(entry)}>Decrypt</button>
+                                    <div class="flex gap-2">
+                                        <div>********</div>
                                     </div>
                                 {/if}
+                            </td>
+                            <td>
+                                {#if decryptedEntries.has(entry.id)}
+                                    <button class="btn btn-xs btn-outline btn-square border-none"
+                                            on:click={() => hideDecrypt(entry)}>
+                                        <Fa icon={faEyeSlash} class="stroke-current" size="lg"/>
+                                    </button>
+                                {:else}
+                                    <button class="btn btn-xs btn-outline btn-square border-none"
+                                            on:click={() => showDecrypt(entry)}>
+                                        <Fa icon={faEye} class="stroke-current" size="lg"/>
+                                    </button>
+                                {/if}
+                                <button class="btn btn-xs btn-outline btn-square border-none"
+                                        on:click={() => pwToClipboard(entry)}>
+                                    <Fa icon={faCopy} class="stroke-current" size="lg"/>
+                                </button>
                             </td>
                         </tr>
                     {/each}
@@ -148,7 +186,7 @@
                                 <h2 class="card-title">{entry.name}</h2>
                                 <p>{entry.user}</p>
                                 <div class="card-actions justify-end">
-                                    <button class="btn btn-primary" on:click={() => decrypt(entry)}>Decrypt</button>
+                                    <button class="btn btn-primary" on:click={() => showDecrypt(entry)}>Decrypt</button>
                                 </div>
                             </div>
                         </div>

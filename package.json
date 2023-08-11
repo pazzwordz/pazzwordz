@@ -26,6 +26,8 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@fortawesome/free-brands-svg-icons": "^6.4.2",
+		"@fortawesome/free-solid-svg-icons": "^6.4.2",
 		"@supabase/auth-helpers-sveltekit": "^0.10.2",
 		"@supabase/supabase-js": "^2.32.0",
 		"@types/aes-js": "^3.1.1",
@@ -35,6 +37,7 @@
 		"crystals-kyber": "^5.1.0",
 		"pbkdf2": "^3.1.2",
 		"sha256-uint8array": "^0.10.5",
+		"svelte-fa": "^3.0.4",
 		"uuid": "^9.0.0"
 	}
 }
