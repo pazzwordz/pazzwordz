@@ -3,6 +3,8 @@
     import {onMount} from 'svelte'
     import "../app.css"
     import Navbar from "$lib/components/Navbar.svelte";
+    import Footer from "$lib/components/Footer.svelte";
+
     export let data
 
     let {supabase, session} = data
@@ -21,9 +23,11 @@
     });
 </script>
 
-<div class="relative px-[10vw] bg-base-100 h-[200vh]">
+<div class="relative px-[10vw] bg-base-300">
     <Navbar supabase={supabase}/>
-    <main class="mt-12">
+    <div class="h-12"/>
+    <main class="min-h-screen">
         <slot/>
     </main>
 </div>
+<Footer/>
