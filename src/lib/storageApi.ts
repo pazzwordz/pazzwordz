@@ -19,7 +19,6 @@ export class TypedStorage<T> implements ITypedStorage<T> {
 
     constructor() {
         const browserStorage = typeof window !== 'undefined' && window?.["localStorage"];
-        //memory storage as a fallback
         this.storage = browserStorage || global["localStorage"];
         if (!this.storage) {
             throw Error('Web Storage API not found.');
@@ -36,7 +35,6 @@ export class TypedStorage<T> implements ITypedStorage<T> {
 
     public getItem<U extends keyof T>(key: U): T[U] | null {
         const item = this.storage?.getItem(key.toString());
-
         if (item == null) {
             return item;
         }
