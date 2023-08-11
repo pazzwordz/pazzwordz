@@ -13,11 +13,15 @@
 
 </script>
 
+<svelte:head>
+    <title>Pazzwordz | Home</title>
+</svelte:head>
+
 <Hero/>
 
 <Stats/>
 
 <Features/>
 
-<a id="pricing" />
+<a id="pricing"/>
 <Pricing/>

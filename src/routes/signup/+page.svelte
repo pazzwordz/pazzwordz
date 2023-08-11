@@ -38,6 +38,9 @@
         }
     }
 </script>
+<svelte:head>
+    <title>Pazzwordz | Signup</title>
+</svelte:head>
 <section class="w-full h-screen flex items-center justify-center overflow-clip">
     <div class="w-full rounded-lg shadow border md:mt-0 sm:max-w-md xl:p-0 bg-gray-800 border-gray-700">
         <div class="p-6 space-y-4 md:space-y-6 sm:p-8">

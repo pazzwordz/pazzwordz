@@ -44,6 +44,10 @@
     };
 </script>
 
+<svelte:head>
+    <title>Pazzwordz | Login</title>
+</svelte:head>
+
 <section class="w-full h-[60vh] flex items-center justify-center">
     <form class="flex flex-col gap-4 w-full max-w-xs" on:submit|preventDefault={handleLogin}>
         <h1 class="text-3xl font-bold">Login</h1>

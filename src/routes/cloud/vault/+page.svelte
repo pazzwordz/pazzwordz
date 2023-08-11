@@ -9,4 +9,7 @@
         return data.session!.user.id;
     }
 </script>
+<svelte:head>
+    <title>Pazzwordz | Vault</title>
+</svelte:head>
 <Vault supabase={data.supabase} userId={getUserId()}/>

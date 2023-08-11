@@ -8,4 +8,7 @@
 
     })
 </script>
+<svelte:head>
+    <title>Pazzwordz | Local Vault</title>
+</svelte:head>
 <Vault/>
