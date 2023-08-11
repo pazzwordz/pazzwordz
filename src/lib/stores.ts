@@ -31,13 +31,8 @@ const bufferSerializer: Serializer<Uint8Array | null> = {
 export function setVaultKey(plainKey: string, otpKey: Uint8Array) {
     otpKeyStore.set(otpKey);
     const encrypted = encryptText(plainKey, otpKey)
-    console.log("encrypted " + encrypted)
-    console.log("decrypted " + decryptHex(encrypted, otpKey))
-    console.log("Saved " + otpKey)
     vaultKeyStoreInternal.set(encrypted)
-    //vaultKeyStoreInternal.set(plainKey)
 }
-
 
 const vaultKeyStoreInternal = persisted<string | null>("vaultKey", null, {
     storage: "session",
@@ -55,7 +50,6 @@ export const vaultKeyStore = derived([vaultKeyStoreInternal, otpKeyStore],
         if ($otpKeyStore == null || $vaultKeyStoreInternal == null)
             return null
         return decryptHex($vaultKeyStoreInternal!, $otpKeyStore!)
-        //return $vaultKeyStoreInternal;
     });
 
 

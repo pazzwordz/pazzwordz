@@ -4,6 +4,7 @@
     import {setVaultKey, vaultKeyStore} from "$lib/stores";
     import {decryptHex, deriveKey, encryptText, generateOtpKey, sha256HashHex} from "$lib/crypto";
     import {onMount} from "svelte";
+    import {routes} from "$lib/navRoutes";
 
     type PasswordEntry = Row<"PasswordEntry">
     type PasswordEntryView = Omit<PasswordEntry, "encryptedPassword" | "userId">
@@ -134,7 +135,7 @@
                         <div class="card w-full bg-base-100 shadow-xl">
                             <div class="card-body">
                                 <h2 class="card-title">{entry.name}</h2>
-                                <p>{entry.description}</p>
+                                <p>{entry.user}</p>
                                 <div class="card-actions justify-end">
                                     <button class="btn btn-primary" on:click={() => decrypt(entry)}>Decrypt</button>
                                 </div>
