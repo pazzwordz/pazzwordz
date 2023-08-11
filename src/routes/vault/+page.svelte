@@ -3,8 +3,8 @@
     import type {Database} from "$lib/database.types";
     import {goto} from "$app/navigation";
     import {onMount} from "svelte";
-    import {otpStore, vaultKeyStore} from "$lib/stores";
-    import {deriveKey, sha256HashHex} from "$lib/crypto";
+    import {otpKeyStore, vaultKeyStore} from "$lib/stores";
+    import {deriveKey, generateOtpKey, sha256HashHex} from "$lib/crypto";
     import * as aesjs from "aes-js";
 
     let inputVaultKey: string;
@@ -17,7 +17,6 @@
         }
     })
 
-
     async function isValidVaultKeyHash(hash: string) {
         const supabase = data.supabase as SupabaseClient<Database>;
         const response = await supabase.from("VaultKey").select("vaultKeyHash").eq("id", data.session.user.id)
@@ -28,7 +27,10 @@
     async function unlockVault() {
         if (await isValidVaultKeyHash(sha256HashHex(inputVaultKey))) {
             goto("/vault/unlocked")
+            const otpKey = generateOtpKey();
             vaultKeyStore.set(inputVaultKey);
+            otpKeyStore.set(otpKey)
+            console.log($otpKeyStore)
         } else
             errorMessage = "INVALID KEY"
     }

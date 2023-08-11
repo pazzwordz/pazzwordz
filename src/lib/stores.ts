@@ -6,19 +6,20 @@ interface Serializer<T> {
     stringify(object: T): string
 }
 
-const stringPassthroughSerializer: Serializer<string> = {
+const passsthroughSerializer: Serializer<any> = {
     stringify: (value) => value,
     parse: (value) => value,
 }
 
 // @ts-ignore
 export const vaultKeyStore = persisted<string>("vaultKey", undefined, {
-    serializer: stringPassthroughSerializer,
+    serializer: passsthroughSerializer,
     storage: "session"
 })
 
+
 // @ts-ignore
-export const otpKeyStore = persisted<string>("vaultKey", undefined, {
-    serializer: stringPassthroughSerializer,
+export const otpKeyStore = persisted<Buffer>("otpKey", undefined, {
+    serializer: passsthroughSerializer,
     storage: "session"
 })
