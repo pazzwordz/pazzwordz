@@ -15,7 +15,7 @@
         <div class="divider divider-vertical lg:divider-horizontal"/>
         <div class="flex flex-col gap-8 max-w-md mb-4 lg:mb-0">
             <a class="btn btn-primary btn-outline w-48" href={routes.local}>Local</a>
-            <a class="btn btn-info btn-outline w-48" href={routes.cloud}>Cloud</a>
+            <a class="btn btn-info btn-outline w-48" href={routes.cloud.cloud}>Cloud</a>
         </div>
     </div>
 </div>

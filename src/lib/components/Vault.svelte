@@ -78,7 +78,7 @@
 
 <div class="w-full flex flex-col lg:flex-row gap-4 lg:p-8 h-[80vh]">
     <div class="lg:w-1/5 flex flex-col items-center gap-4">
-        <a class="btn w-64 btn-outline flex gap-2 items-center" href={routes.cloud}>
+        <a class="btn w-64 btn-outline flex gap-2 items-center" href={routes.cloud.cloud}>
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="stroke-current"
                  viewBox="0 0 16 16">
                 <path fill-rule="evenodd"

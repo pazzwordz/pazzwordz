@@ -2,6 +2,7 @@
     import {get} from "svelte/store";
     import type {PageData} from "./$types";
     import {fingerprintStore} from "$lib/stores";
+    import {routes} from "$lib/navRoutes";
 
     export let data: PageData;
 
@@ -20,7 +21,7 @@
         try {
             loading = true;
 
-            let device_data = await getCloudflareJSON()
+            let device_data = await getCloudflareJSON();
 
             const response = await data.supabase.auth.signInWithPassword({
                 email,
@@ -59,8 +60,8 @@
         </div>
         <button type="submit" class="btn btn-outline btn-primary w-full">Sign in</button>
         <div class="flex w-full justify-between font-medium text-sm">
-            <a class="link link-hover">Forgot Password</a>
-            <a class="link link-hover">Sign Up</a>
+            <a class="link link-hover" href={routes.auth.resetPassword}>Forgot Password</a>
+            <a class="link link-hover" href={routes.auth.signUp}>Sign Up</a>
         </div>
     </form>
 </section>

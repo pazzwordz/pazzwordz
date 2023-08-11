@@ -25,7 +25,7 @@
                 <h2 class="card-title">Your Pazzwordz</h2>
                 <p>Manage your Passwords in one secure place. Start Here!</p>
                 <div class="card-actions justify-end">
-                    <a class="btn btn-primary" href={routes.cloudVault}>Pazzwordz</a>
+                    <a class="btn btn-primary" href={routes.cloud.cloudVault}>Pazzwordz</a>
                 </div>
             </div>
         </div>
@@ -35,7 +35,7 @@
                 <h2 class="card-title">Devices</h2>
                 <p>See which devices accessed your account and manage them!</p>
                 <div class="card-actions justify-end">
-                    <a class="btn btn-info" href={routes.cloudDevices}>Manage</a>
+                    <a class="btn btn-info" href={routes.cloud.cloudDevices}>Manage</a>
                 </div>
             </div>
         </div>

@@ -6,15 +6,15 @@
     <div>
         <span class="footer-title">Pazzwordz</span>
         <a class="link link-hover" href={routes.local}>Local</a>
-        <a class="link link-hover" href={routes.cloud}>Cloud</a>
+        <a class="link link-hover" href={routes.cloud.cloud}>Cloud</a>
 <!--        <a class="link link-hover" href={routes.terms}>Pricing</a>-->
     </div>
     <div>
         <span class="footer-title">Legal</span>
-        <a class="link link-hover" href={routes.terms}>Terms of use</a>
-        <a class="link link-hover" href={routes.privacy}>Privacy policy</a>
-        <a class="link link-hover" href={routes.cookies}>Cookie policy</a>
-        <a class="link link-hover" href={routes.imprint}>Imprint</a>
+        <a class="link link-hover" href={routes.legal.terms}>Terms of use</a>
+        <a class="link link-hover" href={routes.legal.privacy}>Privacy policy</a>
+        <a class="link link-hover" href={routes.legal.cookies}>Cookie policy</a>
+        <a class="link link-hover" href={routes.legal.imprint}>Imprint</a>
     </div>
     <div>
         <span class="footer-title">Stay up to Date!</span>

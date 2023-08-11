@@ -29,13 +29,13 @@
                     <div class="divider my-0"/>
                     <li><a href={routes.local}>Local</a></li>
                     <div class="divider my-0"/>
-                    <li><a href={routes.cloud}>Cloud</a></li>
+                    <li><a href={routes.cloud.cloud}>Cloud</a></li>
                     <div class="divider my-0"/>
                     <li>
                         {#if session}
                             <button on:click={signOut}>Sign Out</button>
                         {:else }
-                            <a href={routes.login}>Sign In</a>
+                            <a href={routes.auth.login}>Sign In</a>
                         {/if}
                     </li>
                 </ul>
@@ -47,12 +47,12 @@
             <ul class="menu menu-horizontal px-1 hidden lg:flex font-medium">
                 <li><a href="/">Home</a></li>
                 <li><a href={routes.local}>Local</a></li>
-                <li><a href={routes.cloud}>Cloud</a></li>
+                <li><a href={routes.cloud.cloud}>Cloud</a></li>
                 <li>
                     {#if session}
                         <button on:click={signOut}>Sign Out</button>
                     {:else}
-                        <a href={routes.login}>Sign In</a>
+                        <a href={routes.auth.login}>Sign In</a>
                     {/if}
                 </li>
             </ul>
