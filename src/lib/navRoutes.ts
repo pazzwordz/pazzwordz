@@ -1,6 +1,7 @@
 export const routes = {
     local: "/local",
     cloud: "/cloud",
+    login: "/login",
     cloudVault: "/cloud/vault",
     cloudDevices: "/cloud/devices",
     terms: "/legal/terms",

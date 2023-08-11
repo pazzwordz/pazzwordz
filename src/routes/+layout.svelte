@@ -14,7 +14,7 @@
     $: ({supabase, session} = data)
 
     onMount(() => {
-        if(!$dataLocalStore)
+        if (!$dataLocalStore)
             $dataLocalStore = new DataLayerLocal();
         const {
             data: {subscription},
@@ -38,7 +38,7 @@
 </script>
 
 <div class="relative px-[5vw] lg:px-[10vw] bg-base-300">
-    <Navbar supabase={supabase}/>
+    <Navbar {supabase} {session}/>
     <div class="h-12"/>
     <main class="min-h-screen">
         <slot/>

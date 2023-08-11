@@ -34,16 +34,31 @@
             </svg>
             <span>Back</span>
         </a>
-        {#each entries as device}
-            <button class="btn" on:click={() => {selectedDevice = device}}>{getDeviceData(device)["uag"]}</button>
+        {#each entries as device, i}
+            <button class="btn w-64" on:click={() => {selectedDevice = device}}>Device {i}</button>
         {/each}
     </div>
     <div class="divider divider-vertical lg:divider-horizontal"/>
     <div class="w-full relative">
         <h2 class="text-4xl font-bold">Device Info</h2>
-        <div class=" h-[95%] overflow-y-scroll">
+        <div class="h-[95%] overflow-y-scroll">
             {#if selectedDevice}
-                {getDeviceData(selectedDevice)["uag"]}
+                <div>
+                    <b>IP-Address</b>
+                    {getDeviceData(selectedDevice)["ip"]}
+                </div>
+                <div>
+                    <b>Location</b>
+                    {getDeviceData(selectedDevice)["loc"]} - {getDeviceData(selectedDevice)["colo"]}
+                </div>
+                <div>
+                    <b>User-Agent</b>
+                    {getDeviceData(selectedDevice)["uag"]}
+                </div>
+                <div>
+                    <b>Device-Fingerprint</b>
+                    {selectedDevice.fingerprint}
+                </div>
             {/if}
         </div>
     </div>
