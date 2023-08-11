@@ -1,9 +1,11 @@
 <script lang="ts">
+    import type {PageData} from "./$types";
 
     import {routes} from "$lib/navRoutes";
 
+    export let data: PageData;
 
-    let username = "ShitUser"
+    let username = data.session!.user.email;
 </script>
 
 <div>

@@ -3,6 +3,7 @@
     import type {PageData} from "./$types";
     import {fingerprintStore} from "$lib/stores";
     import {routes} from "$lib/navRoutes";
+    import {goto} from "$app/navigation";
 
     export let data: PageData;
 
@@ -33,6 +34,8 @@
             if (response.error) {
                 errorMessage = response.error.message;
             }
+
+            await goto(routes.cloud.cloud);
 
         } catch (error) {
         } finally {
