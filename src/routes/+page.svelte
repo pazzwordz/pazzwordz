@@ -3,6 +3,7 @@
     import Stats from "$lib/components/Stats.svelte";
     import {routes} from "$lib/navRoutes";
     import Features from "$lib/components/Features.svelte";
+    import Pricing from "$lib/components/Pricing.svelte";
 
     export let data
 
@@ -17,3 +18,6 @@
 <Stats/>
 
 <Features/>
+
+<a id="pricing" />
+<Pricing/>

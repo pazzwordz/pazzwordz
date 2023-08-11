@@ -27,6 +27,8 @@
                 <ul tabindex="-1" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
                     <li><a href="/">Home</a></li>
                     <div class="divider my-0"/>
+                    <li><a href={routes.pricing}>Pricing</a></li>
+                    <div class="divider my-0"/>
                     <li><a href={routes.local}>Local</a></li>
                     <div class="divider my-0"/>
                     <li><a href={routes.cloud.cloud}>Cloud</a></li>
@@ -46,6 +48,7 @@
             <a class="btn btn-ghost normal-case text-xl lg:hidden" href="/">PAZZWORDZ</a>
             <ul class="menu menu-horizontal px-1 hidden lg:flex font-medium">
                 <li><a href="/">Home</a></li>
+                <li><a href={routes.pricing}>Pricing</a></li>
                 <li><a href={routes.local}>Local</a></li>
                 <li><a href={routes.cloud.cloud}>Cloud</a></li>
                 <li>
