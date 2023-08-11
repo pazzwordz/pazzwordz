@@ -3,10 +3,11 @@
     import type {Database} from "$lib/database.types";
     import {redirect} from "@sveltejs/kit";
     import {goto} from "$app/navigation";
+    import {routes} from "$lib/navRoutes";
 
     export let supabase: SupabaseClient<Database>;
 
-    async function  signOut() {
+    async function signOut() {
         await supabase.auth.signOut()
         goto("/")
     }
@@ -21,19 +22,22 @@
         </div>
         <div class="flex-none">
             <ul class="menu menu-horizontal px-1">
-                <li><a>Link</a></li>
+                <li><a href={routes.local}>Local</a></li>
+                <li><a href={routes.cloud}>Cloud</a></li>
+<!--                <li>-->
+<!--                    <details>-->
+<!--                        <summary>-->
+<!--                            Parent-->
+<!--                        </summary>-->
+<!--                        <ul class="p-2 bg-base-100">-->
+<!--                            <li><a>Link 1</a></li>-->
+<!--                            <li><a>Link 2</a></li>-->
+<!--                        </ul>-->
+<!--                    </details>-->
+<!--                </li>-->
                 <li>
-                    <details>
-                        <summary>
-                            Parent
-                        </summary>
-                        <ul class="p-2 bg-base-100">
-                            <li><a>Link 1</a></li>
-                            <li><a>Link 2</a></li>
-                        </ul>
-                    </details>
+                    <button on:click={signOut}>Sign Out</button>
                 </li>
-            <button on:click={signOut}>Sign Out</button>
             </ul>
         </div>
     </div>
