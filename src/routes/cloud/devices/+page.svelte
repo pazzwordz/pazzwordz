@@ -5,16 +5,13 @@
     import {onMount} from "svelte";
 
     type DeviceEntry = Row<"DeviceEntry">
-    let decryptedEntries = new Map<string, string>();
     export let data: PageData;
-    const userId = data.session!.user.id;
-
     let entries = new Array<DeviceEntry>;
+    let selectedDevice: DeviceEntry;
 
     onMount(() => {
         refreshEntries();
     })
-
 
     async function refreshEntries() {
         entries = new Array<DeviceEntry>();
@@ -23,13 +20,13 @@
         console.log(entries)
     }
 
-    let vaultKeyInput: string | undefined;
-
-    let selectedDevice: DeviceEntry;
+    function getDeviceData(device: DeviceEntry) {
+        return device.data as any
+    }
 
 </script>
 
-<div class="w-full flex gap-4 p-8 h-[80vh]">
+<div class="w-full flex flex-col lg:flex-row gap-4 lg:p-8 h-[80vh]">
     <div class="lg:w-1/5 flex flex-col items-center gap-4">
         <a class="btn w-64 btn-outline flex gap-2 items-center" href={routes.cloud}>
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="stroke-current" viewBox="0 0 16 16">
@@ -38,7 +35,7 @@
             <span>Back</span>
         </a>
         {#each entries as device}
-            <button class="btn" on:click={() => {selectedDevice = device}}>{device.data.uag}</button>
+            <button class="btn" on:click={() => {selectedDevice = device}}>{getDeviceData(device)["uag"]}</button>
         {/each}
     </div>
     <div class="divider divider-vertical lg:divider-horizontal"/>
@@ -46,7 +43,7 @@
         <h2 class="text-4xl font-bold">Device Info</h2>
         <div class=" h-[95%] overflow-y-scroll">
             {#if selectedDevice}
-                {JSON.stringify(selectedDevice.data)}
+                {getDeviceData(selectedDevice)["uag"]}
             {/if}
         </div>
     </div>
