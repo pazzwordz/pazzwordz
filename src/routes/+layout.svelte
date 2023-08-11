@@ -23,7 +23,6 @@
         });
 
         const fpPromise = FingerprintJS.load();
-
         fpPromise
             .then((fp: any) => fp.get())
             .then((result: any) => {
