@@ -4,15 +4,12 @@
     import type {Row} from "$lib/database";
     import {onMount} from "svelte";
 
-    type PasswordEntry = Row<"PasswordEntry">
-    type PasswordEntryView = Omit<PasswordEntry, "encryptedPassword" | "userId">
+    type DeviceEntry = Row<"DeviceEntry">
     let decryptedEntries = new Map<string, string>();
-
-    let vaults = [{name: "Vault 1"}];
     export let data: PageData;
     const userId = data.session!.user.id;
 
-    let entries = new Array<PasswordEntryView>;
+    let entries = new Array<DeviceEntry>;
 
     onMount(() => {
         refreshEntries();
@@ -20,8 +17,8 @@
 
 
     async function refreshEntries() {
-        entries = new Array<PasswordEntryView>();
-        const {data: passwordEntries} = await data.supabase.from("PasswordEntry").select("id, name, description")
+        entries = new Array<DeviceEntry>();
+        const {data: passwordEntries} = await data.supabase.from("DeviceEntry").select("*")
         entries = passwordEntries!;
     }
 

@@ -34,6 +34,8 @@ export function setVaultKey(plainKey: string, otpKey: Uint8Array) {
     vaultKeyStoreInternal.set(encrypted)
 }
 
+export const fingerprintStore = writable<string>(undefined);
+
 const vaultKeyStoreInternal = persisted<string | null>("vaultKey", null, {
     storage: "session",
 })

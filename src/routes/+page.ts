@@ -1,15 +1,9 @@
-import {createClient} from '@supabase/supabase-js'
-import {PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY} from '$env/static/public'
 import {redirect} from "@sveltejs/kit";
-import type {Database} from "$lib/database.types";
+import type {PageLoad} from "./$types";
 
-/** @type {import('./$types').PageLoad} */
-export async function load({parent}) {
-    const {session, supabase} = await parent();
-    if (!session)
-        throw redirect(302, '/login')
+export const load: PageLoad = async ({parent}: any) => {
 
-    return {
-        supabase: supabase
-    }
+    const {session} = await parent()
+
+    return {}
 }

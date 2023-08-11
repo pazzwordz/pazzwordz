@@ -1,5 +1,7 @@
 <script lang="ts">
     import {get} from "svelte/store";
+    import type {PageData} from "./$types";
+    import {fingerprintStore} from "$lib/stores";
 
     export let data: PageData;
 
@@ -8,17 +10,18 @@
     let password = "";
     let errorMessage = "";
 
-    const handleLogin = async () => {
+    async function handleLogin() {
         try {
-            loading = true;
-            const response = await data.supabase.auth.signInWithPassword({
-                email,
-                password,
-            });
-
-            if (response.error) {
-                errorMessage = response.error.message;
-            }
+            console.log($fingerprintStore)
+            // loading = true;
+            // const response = await data.supabase.auth.signInWithPassword({
+            //     email,
+            //     password,
+            // });
+            //
+            // if (response.error) {
+            //     errorMessage = response.error.message;
+            // }
 
         } catch (error) {
         } finally {
