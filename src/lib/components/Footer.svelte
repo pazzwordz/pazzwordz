@@ -1,16 +1,20 @@
+<script>
+    import {routes} from "$lib/navRoutes";
+</script>
+
 <footer class="footer p-10 bg-base-200 text-base-content px-[5vw] lg:px-[10vw]">
     <div>
         <span class="footer-title">Pazzwordz</span>
-        <a class="link link-hover">Local</a>
-        <a class="link link-hover">Cloud</a>
-        <a class="link link-hover">Pricing</a>
+        <a class="link link-hover" href={routes.local}>Local</a>
+        <a class="link link-hover" href={routes.cloud}>Cloud</a>
+<!--        <a class="link link-hover" href={routes.terms}>Pricing</a>-->
     </div>
     <div>
         <span class="footer-title">Legal</span>
-        <a class="link link-hover">Terms of use</a>
-        <a class="link link-hover">Privacy policy</a>
-        <a class="link link-hover">Cookie policy</a>
-        <a class="link link-hover">Imprint</a>
+        <a class="link link-hover" href={routes.terms}>Terms of use</a>
+        <a class="link link-hover" href={routes.privacy}>Privacy policy</a>
+        <a class="link link-hover" href={routes.cookies}>Cookie policy</a>
+        <a class="link link-hover" href={routes.imprint}>Imprint</a>
     </div>
     <div>
         <span class="footer-title">Stay up to Date!</span>

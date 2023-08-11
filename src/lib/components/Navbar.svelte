@@ -24,17 +24,6 @@
             <ul class="menu menu-horizontal px-1">
                 <li><a href={routes.local}>Local</a></li>
                 <li><a href={routes.cloud}>Cloud</a></li>
-<!--                <li>-->
-<!--                    <details>-->
-<!--                        <summary>-->
-<!--                            Parent-->
-<!--                        </summary>-->
-<!--                        <ul class="p-2 bg-base-100">-->
-<!--                            <li><a>Link 1</a></li>-->
-<!--                            <li><a>Link 2</a></li>-->
-<!--                        </ul>-->
-<!--                    </details>-->
-<!--                </li>-->
                 <li>
                     <button on:click={signOut}>Sign Out</button>
                 </li>
