@@ -23,7 +23,7 @@
 
 <div class="relative px-[10vw] bg-base-100 h-[200vh]">
     <Navbar supabase={supabase}/>
-    <main>
+    <main class="mt-12">
         <slot/>
     </main>
 </div>

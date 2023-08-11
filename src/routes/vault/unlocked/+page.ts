@@ -3,8 +3,7 @@ import {PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY} from '$env/static/public'
 import {redirect} from "@sveltejs/kit";
 import type {Database} from "$lib/database.types";
 
-/** @type {import('./$types').PageLoad} */
-export async function load({parent}) {
+export async function load({parent}: any) {
     const {session, supabase} = await parent();
     if (!session)
         throw redirect(302, '/login')
