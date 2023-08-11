@@ -25,6 +25,10 @@
 
 </script>
 
+<svelte:head>
+    <title>Pazzwordz | Devices</title>
+</svelte:head>
+
 <div class="w-full flex flex-col lg:flex-row gap-4 lg:p-8 h-[80vh]">
     <div class="lg:w-1/5 flex flex-col items-center gap-4">
         <a class="btn w-64 btn-outline flex gap-2 items-center" href={routes.cloud.cloud}>

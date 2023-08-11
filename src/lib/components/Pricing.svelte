@@ -35,7 +35,7 @@
             <div class="w-3/5">
                 <h4 class="text-2xl font-bold mb-2 text-white">Local</h4>
                 <p class="">
-                    All features, data securely stored on your device.
+                    All basic features, data securely stored on your device.
                 </p>
             </div>
             <div class="w-2/5 flex items-center justify-center">
@@ -46,7 +46,7 @@
             <div class="w-3/5">
                 <h4 class="text-2xl font-bold mb-2 text-white">Cloud</h4>
                 <p class="">
-                    All features, unlimited Passwords but limited to one device.
+                    All cloud features, unlimited Passwords but limited to one device.
                 </p>
             </div>
             <div class="w-2/5 flex items-center justify-center">

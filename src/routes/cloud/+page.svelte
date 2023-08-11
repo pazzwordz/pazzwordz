@@ -7,7 +7,9 @@
 
     let username = data.session!.user.email;
 </script>
-
+<svelte:head>
+    <title>Pazzwordz | Cloud</title>
+</svelte:head>
 <div>
     <b class="text-4xl">Welcome {username}</b>
 
