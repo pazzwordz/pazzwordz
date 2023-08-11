@@ -7,7 +7,7 @@
         <span class="footer-title">Pazzwordz</span>
         <a class="link link-hover" href={routes.local}>Local</a>
         <a class="link link-hover" href={routes.cloud.cloud}>Cloud</a>
-<!--        <a class="link link-hover" href={routes.terms}>Pricing</a>-->
+        <a class="link link-hover" href={routes.pricing}>Pricing</a>
     </div>
     <div>
         <span class="footer-title">Legal</span>

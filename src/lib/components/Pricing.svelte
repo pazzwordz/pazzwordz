@@ -11,8 +11,10 @@
     <div class="lg:col-span-3">
         <h2 class="text-5xl font-bold text-center lg:text-start">Our Pricing Plans</h2>
         <p class="py-6 font-medium leading-loose text-justify">
-            Provident cupiditate voluptatem et in. Quaerat fugiat ut assumenda excepturi exercitationem quasi. In deleniti eaque aut repudiandae et a id nisi.
-            Provident cupiditate voluptatem et in. Quaerat fugiat ut assumenda excepturi exercitationem quasi. In deleniti eaque aut repudiandae et a id nisi.
+            Our mission is to provide a lightweight, secure and simple password management solution without breaking the bank.
+            We offer three flexible pricing plans tailored to meet your individual needs and preferences.
+            Join Pazzwordz today and take control of your passwords while enjoying the peace of mind that comes with a secure and affordable solution.
+            Your security is our priority.
         </p>
         <div class="grid-cols-2 gap-4 hidden lg:grid font-medium">
             {#each features as feature, i}
