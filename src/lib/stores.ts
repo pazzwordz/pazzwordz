@@ -1,6 +1,7 @@
 import {derived, writable} from "svelte/store";
 import {persisted} from "$lib/persisted";
 import {decryptHex, encryptText} from "$lib/crypto";
+import type {DataLayerLocal} from "$lib/DataLayer";
 
 interface Serializer<T> {
     parse(text: string): T
@@ -22,6 +23,8 @@ const uint8Serializer: Serializer<Uint8Array | null> = {
         return new Uint8Array(obj);
     }
 }
+
+export const dataLocalStore = writable<DataLayerLocal>()
 
 export function setVaultKey(plainKey: string, otpKey: Uint8Array) {
     otpKeyStore.set(otpKey);

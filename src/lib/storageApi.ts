@@ -17,11 +17,10 @@ export interface ITypedStorage<T> {
 export class TypedStorage<T> implements ITypedStorage<T> {
     private readonly storage: Storage;
 
-    constructor(fallback?: MemoryStorage) {
+    constructor() {
         const browserStorage = typeof window !== 'undefined' && window?.["localStorage"];
         //memory storage as a fallback
-        this.storage = browserStorage || global["localStorage"] || fallback;
-
+        this.storage = browserStorage || global["localStorage"];
         if (!this.storage) {
             throw Error('Web Storage API not found.');
         }
@@ -47,6 +46,30 @@ export class TypedStorage<T> implements ITypedStorage<T> {
         } catch (error) {
             throw error;
         }
+    }
+
+    public getItemMap<U extends keyof T>(key: U): T[U] | null {
+        const flattenedMap = this.getItem(key);
+        if(!flattenedMap)
+            return null
+        //@ts-ignore
+        return this.unflattenMap(flattenedMap)
+    }
+
+    public setItemMap<U extends keyof T>(key: U, value: T[U]): void {
+        //@ts-ignore
+        const flattenedMap = this.flattenMap(value);
+        //@ts-ignore
+        this.setItem(key, flattenedMap);
+    }
+
+    private flattenMap(map: Map<any, any>) {
+        return Array.from(map.entries());
+    }
+
+    private unflattenMap(flattenedMap: []) {
+        return new Map(flattenedMap)
+
     }
 
     public setItem<U extends keyof T>(key: U, value: T[U]): void {

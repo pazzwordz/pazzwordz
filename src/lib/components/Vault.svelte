@@ -46,7 +46,9 @@
     }
 
     async function addPassword() {
-        await dataLayer.createPasswordEntry($vaultKeyStore!, addPazzPass!, addPazzName!, addPazzUser!)
+        const entry = await dataLayer.createPasswordEntry($vaultKeyStore!, addPazzPass!, addPazzName!, addPazzUser!)
+        entries.push(entry)
+        entries = entries;
         addPazzName = undefined;
         addPazzUser = undefined;
         addPazzPass = undefined;

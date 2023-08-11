@@ -53,7 +53,7 @@ export class DataLayerCloud implements DataLayer {
     }
 }
 
-import {MemoryStorage, TypedStorage} from "$lib/localStorage";
+import {MemoryStorage, TypedStorage} from "$lib/storageApi";
 import type {PasswordEntry} from "$lib/types";
 
 interface AppStorageSchema {
@@ -66,11 +66,9 @@ export class DataLayerLocal implements DataLayer {
     private storage: TypedStorage<AppStorageSchema>;
 
     constructor() {
-        //ToDo: memory storage should be singleton since in-memory storage should be shared between typed storage instances
-        const memoryStorage = new MemoryStorage();
         this.storage = new TypedStorage<AppStorageSchema>();
-        if(!this.storage.getItem("passwords")) {
-            this.storage.setItem("passwords", new Map<string, PasswordEntry>())
+        if(!this.storage.getItemMap("passwords")) {
+            this.storage.setItemMap("passwords", new Map<string, PasswordEntry>())
         }
     }
 
@@ -85,29 +83,34 @@ export class DataLayerLocal implements DataLayer {
             userId: "UserId",
             encryptedPassword: encryptedPassword
         }
-        const entries = this.storage.getItem("passwords")!;
+        const entries = this.storage.getItemMap("passwords")!;
         entries.set(newId, newEntry)
-        this.storage.setItem("passwords", entries)
+        this.storage.setItemMap("passwords", entries)
         return newEntry
     }
 
     public async deleteEntry(id: string): Promise<void> {
-        const entries = this.storage.getItem("passwords")!;
+        const entries = this.storage.getItemMap("passwords")!;
         entries.delete(id)
-        this.storage.setItem("passwords", entries)
+        this.storage.setItemMap("passwords", entries)
     }
 
     public async getEncryptedText(id: string): Promise<string> {
-        return Promise.resolve("string")
+        const entries = this.storage.getItemMap("passwords")!;
+        return entries.get(id)!.encryptedPassword
     }
 
     public async getPasswordEntries(): Promise<Array<PasswordEntryView>> {
-        const entries = this.storage.getItem("passwords")!;
+        const entries = this.storage.getItemMap("passwords")!;
         const array = Array.from(entries.values())
         return Promise.resolve(array)
     }
 
     public async isValidVaultKeyHash(hash: string): Promise<boolean> {
         return this.storage.getItem("vaultKeyHash") == hash;
+    }
+
+    public async setVaultKeyHash(hash: string) {
+        this.storage.setItem("vaultKeyHash", hash);
     }
 }

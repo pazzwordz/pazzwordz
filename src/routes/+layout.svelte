@@ -5,7 +5,8 @@
     import Navbar from "$lib/components/Navbar.svelte";
     import Footer from "$lib/components/Footer.svelte";
     import FingerprintJS from "$lib/scripts/fp.js";
-    import {fingerprintStore} from "$lib/stores";
+    import {dataLocalStore, fingerprintStore} from "$lib/stores";
+    import {DataLayerLocal} from "$lib/DataLayer";
 
     export let data
 
@@ -13,6 +14,8 @@
     $: ({supabase, session} = data)
 
     onMount(() => {
+        if(!$dataLocalStore)
+            $dataLocalStore = new DataLayerLocal();
         const {
             data: {subscription},
         } = supabase.auth.onAuthStateChange((event, _session) => {
