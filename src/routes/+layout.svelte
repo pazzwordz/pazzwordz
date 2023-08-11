@@ -23,7 +23,7 @@
     });
 </script>
 
-<div class="relative px-[10vw] bg-base-300">
+<div class="relative px-[5vw] lg:px-[10vw] bg-base-300">
     <Navbar supabase={supabase}/>
     <div class="h-12"/>
     <main class="min-h-screen">
