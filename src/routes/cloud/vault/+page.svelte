@@ -1,20 +1,13 @@
 <script lang="ts">
     import type {PageData} from "./$types";
-    import {routes} from "$lib/navRoutes";
     import type {Row} from "$lib/database";
-    import {otpKeyStore} from "$lib/stores";
+    import {setVaultKey, vaultKeyStore} from "$lib/stores";
     import {decryptHex, deriveKey, encryptText, generateOtpKey, sha256HashHex} from "$lib/crypto";
     import {onMount} from "svelte";
-    import {goto} from "$app/navigation";
-    import {persisted} from "$lib/persisted";
-
-    const vaultKeyStore = persisted<string | null>("vaultKey", null, {
-        storage: "session",
-    })
-
 
     type PasswordEntry = Row<"PasswordEntry">
     type PasswordEntryView = Omit<PasswordEntry, "encryptedPassword" | "userId">
+
     let decryptedEntries = new Map<string, string>();
 
     let vaults = [{name: "Vault 1"}];
@@ -30,7 +23,7 @@
 
     async function refreshEntries() {
         entries = new Array<PasswordEntryView>();
-        const {data: passwordEntries} = await data.supabase.from("PasswordEntry").select("id, name, description")
+        const {data: passwordEntries} = await data.supabase.from("PasswordEntry").select("id, name, user")
         entries = passwordEntries!;
     }
 
@@ -50,19 +43,16 @@
 
     let vaultKeyInput: string | undefined;
 
-
     async function isValidVaultKeyHash(hash: string) {
         const response = await data.supabase.from("VaultKey").select("vaultKeyHash").eq("id", userId)
         const realVaultKey = response.data![0].vaultKeyHash
         return hash == realVaultKey;
     }
 
+    //ToDo: combine vaultkey and otpkey to check if valid otp key, if not, re-register
     async function unlockVault() {
         if (await isValidVaultKeyHash(sha256HashHex(vaultKeyInput!))) {
-            const otpKey = generateOtpKey();
-            vaultKeyStore.set(vaultKeyInput!);
-            otpKeyStore.set(otpKey)
-            vaultKeyStore.set(vaultKeyInput!);
+            setVaultKey(vaultKeyInput!, generateOtpKey())
         } else {
             console.log("wrong vault key")
         }
@@ -118,7 +108,7 @@
                 {#each entries as entry}
                     <tr>
                         <td>{entry.name}</td>
-                        <td>{entry.description}</td>
+                        <td>{entry.user}</td>
                         <td>
                             {#if decryptedEntries.has(entry.id)}
                                 {decryptedEntries.get(entry.id)}
