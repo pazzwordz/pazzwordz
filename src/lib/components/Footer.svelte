@@ -21,7 +21,7 @@
     </div>
     <div>
         <span class="footer-title">Stay up to Date!</span>
-        <div class="form-control w-96">
+        <div class="form-control w-80">
             <div class="relative">
                 <input type="text" placeholder="your@email.com" class="input input-bordered w-full pr-16"/>
                 <button class="btn btn-primary absolute top-0 right-0 rounded-l-none">Subscribe</button>
