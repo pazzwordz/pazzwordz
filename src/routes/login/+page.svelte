@@ -40,59 +40,27 @@
     };
 </script>
 
-<section class="w-full h-screen flex items-center justify-center overflow-clip">
-    <div class="w-full rounded-lg shadow border md:mt-0 sm:max-w-md xl:p-0 bg-gray-800 border-gray-700">
-        <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
-            <h1 class="text-xl font-bold leading-tight tracking-tight md:text-2xl text-white">
-                Sign In
-            </h1>
-            {#if errorMessage != ""}
-                <div class="p-4 bg-red-500 font-medium text-white my-2 rounded-md">
-                    {errorMessage}
-                </div>
-            {/if}
-            <form
-                    class="space-y-4 md:space-y-6"
-                    action="#"
-                    on:submit|preventDefault={handleLogin}>
-                <div>
-                    <label for="email" class="block mb-2 text-sm font-medium text-white"
-                    >Email</label>
-                    <input
-                            type="email"
-                            name="email"
-                            id="email"
-                            bind:value={email}
-                            class="border sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"
-                            placeholder="name@company.com"/>
-                </div>
-                <div>
-                    <label
-                            for="password"
-                            class="block mb-2 text-sm font-medium text-white">Password</label>
-                    <input
-                            type="password"
-                            name="password"
-                            id="password"
-                            bind:value={password}
-                            placeholder="••••••••"
-                            class="border sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
-                </div>
-                <div class="flex items-center justify-between">
-                    <a
-                            href="/"
-                            class="text-sm font-medium text-primary-600 hover:underline text-primary-500 text-white"
-                    >Forgot password?</a>
-                </div>
-                <button
-                        type="submit"
-                        class="w-full text-white bg-blue-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center bg-primary-600 hover:bg-primary-700 focus:ring-primary-800"
-                >Sign in
-                </button>
-            </form>
+<section class="w-full h-[60vh] flex items-center justify-center">
+    <form class="flex flex-col gap-4 w-full max-w-xs" on:submit|preventDefault={handleLogin}>
+        <h1 class="text-3xl font-bold">Login</h1>
+        <div class="divider my-0"/>
+        <div class="form-control w-full">
+            <label class="label" for="">
+                <span class="label-text font-medium">Email</span>
+            </label>
+            <input type="text" placeholder="your@email.com" class="input input-bordered w-full" bind:value={email}/>
         </div>
-    </div>
-</section>
 
-<style>
-</style>
+        <div class="form-control w-full">
+            <label class="label" for="">
+                <span class="label-text font-medium">Password</span>
+            </label>
+            <input type="password" placeholder="••••••••" class="input input-bordered w-full" bind:value={password}/>
+        </div>
+        <button type="submit" class="btn btn-outline btn-primary w-full">Sign in</button>
+        <div class="flex w-full justify-between font-medium text-sm">
+            <a class="link link-hover">Forgot Password</a>
+            <a class="link link-hover">Sign Up</a>
+        </div>
+    </form>
+</section>

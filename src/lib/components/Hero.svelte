@@ -5,7 +5,7 @@
 </script>
 
 <div class="hero min-h-[50vh] bg-base-200 rounded-xl vignette" style="background-image: url(/banner2.webp);">
-    <div class="hero-overlay bg-base-300 bg-opacity-70"></div>
+    <div class="hero-overlay bg-base-300 bg-opacity-80"></div>
     <div class="hero-content text-center max-w-[90vw] flex-col lg:flex-row">
         <div class="flex flex-col justify-center">
             <h1 class="text-3xl lg:text-5xl  font-bold uppercase my-4">Simplicity is Security</h1>
@@ -22,6 +22,6 @@
 
 <style>
     .vignette {
-        box-shadow: 0 0 200px rgba(0,0,0,0.9) inset
+        box-shadow: 0 0 800px rgba(0,0,0,0.9) inset
     }
 </style>
