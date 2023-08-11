@@ -1,7 +1,7 @@
 <script lang="ts">
     import type {PageData} from "./$types";
     import {routes} from "$lib/navRoutes";
-    import type {Row} from "$lib/database";
+    import type {Row} from "$lib/types";
     import {onMount} from "svelte";
 
     type DeviceEntry = Row<"DeviceEntry">

@@ -8,12 +8,7 @@ interface Serializer<T> {
     stringify(object: T): string
 }
 
-const passsthroughSerializer: Serializer<any> = {
-    stringify: (value) => value,
-    parse: (value) => value,
-}
-
-const bufferSerializer: Serializer<Uint8Array | null> = {
+const uint8Serializer: Serializer<Uint8Array | null> = {
     stringify(bytes: Uint8Array | null): string {
         if (bytes == null)
             return JSON.stringify(null);
@@ -42,7 +37,7 @@ const vaultKeyStoreInternal = persisted<string | null>("vaultKey", null, {
 
 //@ts-ignore
 const otpKeyStore = persisted<Uint8Array | null>("otpKey", null, {
-    serializer: bufferSerializer,
+    serializer: uint8Serializer,
     storage: "session"
 })
 

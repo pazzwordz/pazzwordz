@@ -1,5 +1,6 @@
 import {redirect} from "@sveltejs/kit";
 import type {PageLoad} from "./$types";
+import {DataLayerCloud} from "$lib/DataLayer";
 
 // export async function load({parent}): PageLoad {
 //     const {session, supabase} = await parent();
@@ -12,10 +13,9 @@ import type {PageLoad} from "./$types";
 // }
 
 export const load: PageLoad = async ({parent}) => {
-
     const {session, supabase} = await parent();
 
     return {
-        supabase: supabase
+        session
     }
 }
