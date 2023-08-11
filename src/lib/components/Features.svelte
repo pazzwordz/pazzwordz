@@ -60,7 +60,7 @@
                         </tbody>
                     </table>
                 </div>
-                <a class="btn btn-outline btn-info" href={routes.cloud}>Create Account</a>
+                <a class="btn btn-outline btn-info" href={routes.cloud.cloud}>Create Account</a>
             </div>
         </div>
     </div>

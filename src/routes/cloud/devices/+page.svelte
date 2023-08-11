@@ -17,7 +17,6 @@
         entries = new Array<DeviceEntry>();
         const {data: passwordEntries} = await data.supabase.from("DeviceEntry").select("*")
         entries = passwordEntries!;
-        console.log(entries)
     }
 
     function getDeviceData(device: DeviceEntry) {
