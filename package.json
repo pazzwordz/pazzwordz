@@ -30,9 +30,11 @@
 		"@supabase/supabase-js": "^2.32.0",
 		"@types/aes-js": "^3.1.1",
 		"@types/pbkdf2": "^3.1.0",
+		"@types/uuid": "^9.0.2",
 		"aes-js": "^3.1.2",
 		"crystals-kyber": "^5.1.0",
 		"pbkdf2": "^3.1.2",
-		"sha256-uint8array": "^0.10.5"
+		"sha256-uint8array": "^0.10.5",
+		"uuid": "^9.0.0"
 	}
 }

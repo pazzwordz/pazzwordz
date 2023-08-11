@@ -3,7 +3,7 @@
     import type {Database} from "$lib/database.types";
     import {goto} from "$app/navigation";
     import {onMount} from "svelte";
-    import {vaultKeyStore} from "$lib/stores";
+    import {otpStore, vaultKeyStore} from "$lib/stores";
     import {deriveKey, sha256HashHex} from "$lib/crypto";
     import * as aesjs from "aes-js";
 
@@ -14,7 +14,6 @@
     onMount(async () => {
         if ($vaultKeyStore && await isValidVaultKeyHash(sha256HashHex($vaultKeyStore))) {
             goto("/vault/unlocked")
-            $vaultKeyStore = inputVaultKey;
         }
     })
 
