@@ -30,7 +30,6 @@
             const otpKey = generateOtpKey();
             vaultKeyStore.set(inputVaultKey);
             otpKeyStore.set(otpKey)
-            console.log($otpKeyStore)
         } else
             errorMessage = "INVALID KEY"
     }
