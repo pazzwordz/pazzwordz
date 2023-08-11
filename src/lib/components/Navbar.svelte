@@ -17,7 +17,7 @@
     <div class="h-4 bg-black/80 w-full"/>
     <div class="navbar bg-base-100 rounded-md">
         <div class="flex-1">
-            <a class="btn btn-ghost normal-case text-xl">PAZZWORDZ</a>
+            <a class="btn btn-ghost normal-case text-xl" href="/">PAZZWORDZ</a>
         </div>
         <div class="flex-none">
             <ul class="menu menu-horizontal px-1">
