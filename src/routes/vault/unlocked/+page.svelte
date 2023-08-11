@@ -7,16 +7,18 @@
     import {goto} from "$app/navigation";
     import * as aesjs from "aes-js"
     import {pbkdf2Sync} from "pbkdf2"
-    import {deriveKey} from "$lib/crypto.js";
+    import {deriveKey, encryptText, decryptHex} from "$lib/crypto.js";
 
     type PasswordEntry = Row<"PasswordEntry">
+    type PasswordEntryView = Omit<PasswordEntry, "encryptedPassword" | "userId">
     let newName: string;
     let newPassword: string;
 
     export let data: PageData;
     const supabase = data.supabase as SupabaseClient<Database>;
 
-    let entries = new Array<PasswordEntry>();
+    let entries = new Array<PasswordEntryView>();
+
     let decryptedEntries = new Map<string, string>();
 
     onMount(() => {
@@ -25,52 +27,39 @@
         refreshEntries();
     })
 
+    async function fetchCryptedText(id: string) {
+        const result = await supabase.from("PasswordEntry").select("encryptedPassword").eq("id", id)
+        return result.data![0].encryptedPassword;
+    }
+
     async function refreshEntries() {
         entries = new Array<PasswordEntry>();
         //ToDo: remove eq, row level security can handle this
-        const response = await supabase.from("PasswordEntry").select("*").eq("userId", data.session.user.id)
+        const response = await supabase.from("PasswordEntry").select("id, name, description").eq("userId", data.session.user.id)
         const resData = response.data!;
         entries = resData;
     }
 
-    // const key_256 = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
-    //     16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28,
-    //     29, 30, 31];
-
-    function encryptText(text: string, key: Buffer) {
-        let textBytes = aesjs.utils.utf8.toBytes(text);
-        let aesCtr = new aesjs.ModeOfOperation.ctr(key);
-        let encryptedBytes = aesCtr.encrypt(textBytes);
-        let encryptedHex = aesjs.utils.hex.fromBytes(encryptedBytes);
-        return encryptedHex;
-    }
-
-    function decryptHex(encryptedHex: string, key: Buffer) {
-        let encryptedBytes = aesjs.utils.hex.toBytes(encryptedHex);
-        let aesCtr = new aesjs.ModeOfOperation.ctr(key);
-        let decryptedBytes = aesCtr.decrypt(encryptedBytes);
-        let decryptedText = aesjs.utils.utf8.fromBytes(decryptedBytes);
-        return decryptedText;
-    }
 
     async function createNewEntry() {
-        // const encryptedPassword = AES.encrypt(newPassword, $vaultKeyStore).toString();
-        const key = deriveKey($vaultKeyStore, 'mysupersecretsalt');
+        const key = deriveKey($vaultKeyStore, 'sussysecretsalt');
         const encryptedPassword = encryptText(newPassword.normalize("NFKD"), key);
-        await supabase.from("PasswordEntry").insert({
+        const result = await supabase.from("PasswordEntry").insert({
             name: newName,
             description: "Hello",
             encryptedPassword: encryptedPassword,
             userId: data.session.user.id
-        })
+        }).select("id, name, description")
+        entries.push(result.data![0])
+        entries = entries
         newName = "";
         newPassword = "";
-        await refreshEntries()
     }
 
-    function decrypt(entry: PasswordEntry) {
-        const key = deriveKey($vaultKeyStore, 'mysupersecretsalt');
-        const password = decryptHex(entry.encryptedPassword, key);
+    async function decrypt(entry: PasswordEntryView) {
+        const encryptedText = await fetchCryptedText(entry.id);
+        const key = deriveKey($vaultKeyStore, 'sussysecretsalt');
+        const password = decryptHex(encryptedText, key);
         decryptedEntries.set(entry.id, password)
         decryptedEntries = decryptedEntries
         entries = entries
@@ -83,7 +72,7 @@
         <button on:click={createNewEntry}>Create</button>
     </div>
     <div class="w-screen mt-6">
-        <table class="w-full">
+        <table class="table table-zebra">
             <thead>
             <tr>
                 <td>Name</td>

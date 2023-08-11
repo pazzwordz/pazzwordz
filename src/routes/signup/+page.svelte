@@ -2,6 +2,7 @@
     import type {SupabaseClient} from "@supabase/supabase-js";
     import type {Database} from "$lib/database.types";
     import {goto} from "$app/navigation";
+    import {createHash} from "sha256-uint8array";
 
     export let data: PageData;
 
@@ -28,7 +29,7 @@
             // generate salt and pepper based on user data deterministically
             supabase.from("VaultKey").insert({
                 id: newId,
-                vaultKeyHash: vaultPassword
+                vaultKeyHash: createHash().update(vaultPassword).digest("hex")
             })
             goto("/login")
         } catch (error) {
