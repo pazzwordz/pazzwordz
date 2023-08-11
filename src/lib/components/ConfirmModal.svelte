@@ -21,8 +21,9 @@
         confirm: "Confirm",
     }
 
-    export function show(onConfirm: Callback, params?: any, options?: Options) {
-        thisOptions = options ?? thisOptions
+    export function show(onConfirm: Callback, params?: any, options?: Partial<Options>) {
+        thisOptions = {...options, ...thisOptions}
+        isModalOpen = true;
         thisOnConfirm = onConfirm;
         thisParams = params
     }

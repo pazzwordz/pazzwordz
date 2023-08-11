@@ -1,21 +1,24 @@
 <script lang="ts">
-    import type {PasswordEntryView} from "$lib/types";
+    import type {PasswordEntry, PasswordEntryView} from "$lib/types";
     import {setVaultKeyCloud, setVaultKeyLocal, vaultKeyStoreCloud, vaultKeyStoreLocal} from "$lib/stores";
     import {decryptHex, deriveKey, generateOtpKey, sha256HashHex} from "$lib/crypto";
     import {onMount} from "svelte";
     import {routes} from "$lib/navRoutes";
     import type {DataLayer} from "$lib/persistent/DataLayer";
     import {copyToClipboard} from "$lib/functions";
-    import {faCopy, faEye, faEyeSlash} from "@fortawesome/free-solid-svg-icons";
+    import {faCopy, faEye, faEyeSlash, faTrash} from "@fortawesome/free-solid-svg-icons";
     import Fa from "svelte-fa"
     import {DataLayerCloud, DataLayerLocal} from "$lib/persistent/DataLayer";
     import type {Database} from "$lib/database.types";
     import type {SupabaseClient} from "@supabase/supabase-js";
+    import ConfirmModal from "$lib/components/ConfirmModal.svelte";
 
     let decryptedEntries = new Map<string, string>();
 
     export let supabase: SupabaseClient<Database> | undefined = undefined;
     export let userId: string | undefined = undefined
+
+    let confirmModal: ConfirmModal;
 
     let dataLayer: DataLayer;
 
@@ -59,6 +62,16 @@
         const encryptedText = await dataLayer.getEncryptedText(entry.id);
         const key = deriveKey($usedVaultKeyStore!, 'sussysecretsalt');
         return decryptHex(encryptedText, key);
+    }
+
+    function deleteEntry(entry: PasswordEntryView) {
+        confirmModal.show(async () => {
+            await dataLayer.deleteEntry(entry.id);
+            await refreshEntries();
+        }, undefined, {
+            header: "Delete Password",
+            description: `Are you sure you want to delete password "${entry.name}"`
+        })
     }
 
     async function showDecrypt(entry: PasswordEntryView) {
@@ -114,6 +127,7 @@
 
 </script>
 
+<ConfirmModal bind:this={confirmModal}/>
 <div class="w-full flex flex-col lg:flex-row gap-4 lg:p-8 h-[80vh]">
     <div class="lg:w-1/5 flex flex-col items-center gap-4">
         <a class="btn w-64 btn-outline flex gap-2 items-center" href={routes.cloud.cloud}>
@@ -223,6 +237,10 @@
                                 <button class="btn btn-xs btn-outline btn-square border-none"
                                         on:click={() => pwToClipboard(entry)}>
                                     <Fa icon={faCopy} class="stroke-current" size="lg"/>
+                                </button>
+                                <button class="btn btn-xs btn-outline btn-square border-none"
+                                        on:click={() => deleteEntry(entry)}>
+                                    <Fa icon={faTrash} class="stroke-current" color="#bf1313" size="lg"/>
                                 </button>
                             </td>
                         </tr>
