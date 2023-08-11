@@ -24,8 +24,6 @@ const uint8Serializer: Serializer<Uint8Array | null> = {
     }
 }
 
-export const dataLocalStore = writable<DataLayerLocal>()
-
 export function setVaultKey(plainKey: string, otpKey: Uint8Array) {
     otpKeyStore.set(otpKey);
     const encrypted = encryptText(plainKey, otpKey)

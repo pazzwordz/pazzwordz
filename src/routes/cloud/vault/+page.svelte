@@ -4,7 +4,9 @@
     import {DataLayerCloud} from "$lib/DataLayer";
 
     export let data: PageData;
-    const dataLayer = new DataLayerCloud(data.supabase, data.session!.user.id)
 
+    function getUserId() {
+        return data.session!.user.id;
+    }
 </script>
-<Vault dataLayer={dataLayer}/>
+<Vault supabase={data.supabase} userId={getUserId()}/>

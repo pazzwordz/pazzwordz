@@ -1,9 +1,10 @@
 import type {PasswordEntryView} from "$lib/types";
 import type {SupabaseClient} from "@supabase/supabase-js";
 import type {Database} from "$lib/database.types";
-import {deriveKey, encryptText} from "$lib/crypto";
+import {deriveKey, encryptText, sha256HashHex} from "$lib/crypto";
 import {error} from "@sveltejs/kit";
 import {v4 as uuid4} from "uuid"
+
 export interface DataLayer {
     getPasswordEntries(): Promise<Array<PasswordEntryView>>
 
@@ -57,19 +58,33 @@ import {MemoryStorage, TypedStorage} from "$lib/storageApi";
 import type {PasswordEntry} from "$lib/types";
 
 interface AppStorageSchema {
-    passwords: Map<string, PasswordEntry>;
+    vaultStorage: LocalVaultStorage
+}
+
+interface LocalVaultStorage {
+    passwords: Array<PasswordEntry>;
     vaultKeyHash: string
 }
 
-
 export class DataLayerLocal implements DataLayer {
     private storage: TypedStorage<AppStorageSchema>;
+    private data: LocalVaultStorage;
 
     constructor() {
         this.storage = new TypedStorage<AppStorageSchema>();
-        if(!this.storage.getItemMap("passwords")) {
-            this.storage.setItemMap("passwords", new Map<string, PasswordEntry>())
+        let storageData = this.storage.getItem("vaultStorage")
+        if (!storageData) {
+            storageData = {
+                passwords: new Array<PasswordEntry>,
+                vaultKeyHash: JSON.stringify(sha256HashHex("sussy123"))
+            }
         }
+        this.data = storageData
+        this.pushToStorage()
+    }
+
+    private pushToStorage() {
+        this.storage.setItem("vaultStorage", this.data);
     }
 
     public async createPasswordEntry(vaultKey: string, password: string, name: string, user: string): Promise<PasswordEntryView> {
@@ -83,34 +98,49 @@ export class DataLayerLocal implements DataLayer {
             userId: "UserId",
             encryptedPassword: encryptedPassword
         }
-        const entries = this.storage.getItemMap("passwords")!;
-        entries.set(newId, newEntry)
-        this.storage.setItemMap("passwords", entries)
+        this.data.passwords.push(newEntry);
+        this.pushToStorage();
         return newEntry
     }
 
+    private getEntryIdx(id: string) {
+        return this.data.passwords.findIndex((entry) => {
+            return entry.id == id;
+        });
+    }
+
+    private getEntry(id: string) {
+        return this.data.passwords.find((entry) => {
+            return entry.id == id;
+        });
+    }
+
     public async deleteEntry(id: string): Promise<void> {
-        const entries = this.storage.getItemMap("passwords")!;
-        entries.delete(id)
-        this.storage.setItemMap("passwords", entries)
+        const idx = this.getEntryIdx(id);
+        this.data.passwords.splice(idx, 1)
+        this.pushToStorage()
     }
 
     public async getEncryptedText(id: string): Promise<string> {
-        const entries = this.storage.getItemMap("passwords")!;
-        return entries.get(id)!.encryptedPassword
+        const entry = this.getEntry(id)!;
+        return entry.encryptedPassword
     }
 
     public async getPasswordEntries(): Promise<Array<PasswordEntryView>> {
-        const entries = this.storage.getItemMap("passwords")!;
-        const array = Array.from(entries.values())
-        return Promise.resolve(array)
+        const entryCopy = JSON.parse(JSON.stringify(this.data.passwords))
+        return Promise.resolve(entryCopy)
     }
 
     public async isValidVaultKeyHash(hash: string): Promise<boolean> {
-        return this.storage.getItem("vaultKeyHash") == hash;
+        return Promise.resolve(this.getVaultKeyHash() == hash);
     }
 
-    public async setVaultKeyHash(hash: string) {
-        this.storage.setItem("vaultKeyHash", hash);
+    public setVaultKeyHash(hash: string) {
+        this.data.vaultKeyHash = hash;
+        this.pushToStorage()
+    }
+
+    public getVaultKeyHash() {
+        return this.data.vaultKeyHash;
     }
 }

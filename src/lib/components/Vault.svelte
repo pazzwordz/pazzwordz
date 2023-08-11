@@ -8,9 +8,16 @@
     import {copyToClipboard} from "$lib/functions";
     import {faCopy, faEye, faEyeSlash} from "@fortawesome/free-solid-svg-icons";
     import Fa from "svelte-fa"
+    import {DataLayerCloud, DataLayerLocal} from "$lib/DataLayer";
+    import type {Database} from "$lib/database.types";
+    import type {SupabaseClient} from "@supabase/supabase-js";
+
     let decryptedEntries = new Map<string, string>();
 
-    export let dataLayer: DataLayer;
+    export let supabase: SupabaseClient<Database> | undefined = undefined;
+    export let userId: string | undefined = undefined
+
+    let dataLayer: DataLayer;
 
     let entries = new Array<PasswordEntryView>;
     let vaultKeyInput: string | undefined;
@@ -22,6 +29,10 @@
 
 
     onMount(async () => {
+        if (supabase)
+            dataLayer = new DataLayerCloud(supabase, userId!)
+        else
+            dataLayer = new DataLayerLocal();
         refreshEntries();
     })
 
@@ -69,7 +80,7 @@
 
     async function pwToClipboard(entry: PasswordEntryView) {
         let password = decryptedEntries.get(entry.id)
-        if(!password)
+        if (!password)
             password = await decryptPasswordOnly(entry)
         copyToClipboard(password);
     }
