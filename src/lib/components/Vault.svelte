@@ -81,10 +81,6 @@
         dataLayer = dataLayer
     }
 
-    function isLocal() {
-        return supabase == undefined;
-    }
-
     async function unlockVault() {
         if (await dataLayer.isValidVaultKeyHash(sha256HashHex(vaultKeyInput!))) {
             setKeyFunction(vaultKeyInput!, generateOtpKey())
