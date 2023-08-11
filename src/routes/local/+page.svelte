@@ -9,7 +9,7 @@
     onMount(() => {
         if(!localStorage.getItem("vaultKeyHash")) {
             console.log("initial vault key set")
-            localStorage.setItem("vaultKeyHash", sha256HashHex("sussy123"))
+            localStorage.setItem("vaultKeyHash", JSON.stringify(sha256HashHex("sussy123")))
         }
     })
 </script>
