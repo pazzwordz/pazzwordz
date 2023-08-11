@@ -20,10 +20,12 @@
         entries = new Array<DeviceEntry>();
         const {data: passwordEntries} = await data.supabase.from("DeviceEntry").select("*")
         entries = passwordEntries!;
+        console.log(entries)
     }
 
     let vaultKeyInput: string | undefined;
 
+    let selectedDevice: DeviceEntry;
 
 </script>
 
@@ -35,48 +37,17 @@
             </svg>
             <span>Back</span>
         </a>
-        <div class="flex flex-col gap-4 h-[75%] overflow-y-scroll no-scrollbar">
-            <input class="input input-bordered join-item w-64" bind:value={vaultKeyInput} placeholder="Search"/>
-            <div class="join">
-                <button class="btn join-item pointer-events-none">View</button>
-                <select class="select select-bordered join-item w-full">
-                    <option selected>List</option>
-                    <option>Cards</option>
-                </select>
-            </div>
-        </div>
-        <button class="btn btn-success btn-outline w-64">Add Pazzword</button>
+        {#each entries as device}
+            <button class="btn" on:click={() => {selectedDevice = device}}>{device.data.uag}</button>
+        {/each}
     </div>
     <div class="divider divider-vertical lg:divider-horizontal"/>
     <div class="w-full relative">
         <h2 class="text-4xl font-bold">Device Info</h2>
         <div class=" h-[95%] overflow-y-scroll">
-            <table class="table table-zebra">
-                <thead>
-                <tr>
-                    <td>Name</td>
-                    <td>Description</td>
-                    <td>Password</td>
-                </tr>
-                </thead>
-                <tbody>
-                {#each entries as entry}
-                    <tr>
-                        <td>{entry.name}</td>
-                        <td>{entry.description}</td>
-                        <td>
-                            {#if decryptedEntries.has(entry.id)}
-                                {decryptedEntries.get(entry.id)}
-                            {:else }
-                                <div>
-                                    <button on:click={() => decrypt(entry)}>Decrypt</button>
-                                </div>
-                            {/if}
-                        </td>
-                    </tr>
-                {/each}
-                </tbody>
-            </table>
+            {#if selectedDevice}
+                {JSON.stringify(selectedDevice.data)}
+            {/if}
         </div>
     </div>
 </div>
