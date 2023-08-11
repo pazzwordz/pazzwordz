@@ -63,7 +63,7 @@ interface AppStorageSchema {
 
 interface LocalVaultStorage {
     passwords: Array<PasswordEntry>;
-    vaultKeyHash: string
+    vaultKeyHash: string | null
 }
 
 export class DataLayerLocal implements DataLayer {
@@ -76,7 +76,7 @@ export class DataLayerLocal implements DataLayer {
         if (!storageData) {
             storageData = {
                 passwords: new Array<PasswordEntry>,
-                vaultKeyHash: sha256HashHex("sussy123")
+                vaultKeyHash: null
             }
         }
         this.data = storageData
@@ -133,6 +133,10 @@ export class DataLayerLocal implements DataLayer {
 
     public async isValidVaultKeyHash(hash: string): Promise<boolean> {
         return Promise.resolve(this.getVaultKeyHash() == hash);
+    }
+
+    public isVaultKeyHashSet() {
+        return this.getVaultKeyHash() != null
     }
 
     public setVaultKeyHash(hash: string) {

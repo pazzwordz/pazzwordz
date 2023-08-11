@@ -73,10 +73,20 @@
         decryptedEntries = decryptedEntries
     }
 
+    function createVaultKeyLocal() {
+        const localLayer = toLocalLayer();
+        const hash = sha256HashHex(vaultKeyInput!);
+        localLayer.setVaultKeyHash(hash);
+        vaultKeyInput = undefined;
+        dataLayer = dataLayer
+    }
+
+    function isLocal() {
+        return supabase == undefined;
+    }
 
     async function unlockVault() {
         if (await dataLayer.isValidVaultKeyHash(sha256HashHex(vaultKeyInput!))) {
-            console.log("is valid")
             setKeyFunction(vaultKeyInput!, generateOtpKey())
         } else {
             console.log("wrong vault key")
@@ -100,6 +110,11 @@
             password = await decryptPasswordOnly(entry)
         copyToClipboard(password);
     }
+
+    function toLocalLayer() {
+        return <DataLayerLocal>dataLayer
+    }
+
 
 </script>
 
@@ -136,10 +151,10 @@
     </div>
     <div class="divider divider-vertical lg:divider-horizontal"/>
     <div class="w-full relative">
-        {#if $usedVaultKeyStore == null}
+        {#if dataLayer instanceof DataLayerLocal && !toLocalLayer().isVaultKeyHashSet()}
             <div class="absolute top-0 left-0 bg-base-100/90 w-full h-full flex flex-col gap-8 items-center justify-center z-10 text-center">
-                <b class="text-4xl">Master Password Not Set</b>
-                <form class="join" on:submit={unlockVault}>
+                <b class="text-4xl">Crete new local vault key</b>
+                <form class="join" on:submit={createVaultKeyLocal}>
                     <div>
                         <div>
                             <input class="input input-bordered join-item" bind:value={vaultKeyInput}
@@ -149,6 +164,19 @@
                     <button class="btn join-item">Unlock</button>
                 </form>
             </div>
+        {:else if $usedVaultKeyStore == null}
+        <div class="absolute top-0 left-0 bg-base-100/90 w-full h-full flex flex-col gap-8 items-center justify-center z-10 text-center">
+            <b class="text-4xl">Enter Master Password</b>
+            <form class="join" on:submit={unlockVault}>
+                <div>
+                    <div>
+                        <input class="input input-bordered join-item" bind:value={vaultKeyInput}
+                               placeholder="Vault Key"/>
+                    </div>
+                </div>
+                <button class="btn join-item">Unlock</button>
+            </form>
+        </div>
         {/if}
         <h2 class="text-4xl font-bold">Your Pazzwordz</h2>
         <div class="lg:h-[95%] overflow-y-scroll">
