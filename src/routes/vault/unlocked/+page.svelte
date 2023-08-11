@@ -6,6 +6,8 @@
     import {vaultKeyStore} from "$lib/stores";
     import {goto} from "$app/navigation";
     import * as aesjs from "aes-js"
+    import {pbkdf2Sync} from "pbkdf2"
+    import {deriveKey} from "$lib/crypto.js";
 
     type PasswordEntry = Row<"PasswordEntry">
     let newName: string;
@@ -31,11 +33,11 @@
         entries = resData;
     }
 
-    const key_256 = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
-        16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28,
-        29, 30, 31];
+    // const key_256 = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
+    //     16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28,
+    //     29, 30, 31];
 
-    function encryptText(text: string, key: number[]) {
+    function encryptText(text: string, key: Buffer) {
         let textBytes = aesjs.utils.utf8.toBytes(text);
         let aesCtr = new aesjs.ModeOfOperation.ctr(key);
         let encryptedBytes = aesCtr.encrypt(textBytes);
@@ -43,7 +45,7 @@
         return encryptedHex;
     }
 
-    function decryptHex(encryptedHex: string, key: number[]) {
+    function decryptHex(encryptedHex: string, key: Buffer) {
         let encryptedBytes = aesjs.utils.hex.toBytes(encryptedHex);
         let aesCtr = new aesjs.ModeOfOperation.ctr(key);
         let decryptedBytes = aesCtr.decrypt(encryptedBytes);
@@ -53,7 +55,8 @@
 
     async function createNewEntry() {
         // const encryptedPassword = AES.encrypt(newPassword, $vaultKeyStore).toString();
-        const encryptedPassword = encryptText(newPassword, key_256);
+        const key = deriveKey($vaultKeyStore, 'mysupersecretsalt');
+        const encryptedPassword = encryptText(newPassword.normalize("NFKD"), key);
         await supabase.from("PasswordEntry").insert({
             name: newName,
             description: "Hello",
@@ -66,8 +69,8 @@
     }
 
     function decrypt(entry: PasswordEntry) {
-        const password = decryptHex(entry.encryptedPassword, key_256);
-        console.log(password)
+        const key = deriveKey($vaultKeyStore, 'mysupersecretsalt');
+        const password = decryptHex(entry.encryptedPassword, key);
         decryptedEntries.set(entry.id, password)
         decryptedEntries = decryptedEntries
         entries = entries
@@ -97,8 +100,9 @@
                         {#if decryptedEntries.has(entry.id)}
                             {decryptedEntries.get(entry.id)}
                         {:else }
-                            {entry.encryptedPassword}
-                            <button on:click={() => decrypt(entry)}>Decrypt</button>
+                            <div>
+                                <button on:click={() => decrypt(entry)}>Decrypt</button>
+                            </div>
                         {/if}
                     </td>
                 </tr>
