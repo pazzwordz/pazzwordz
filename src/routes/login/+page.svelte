@@ -10,18 +10,28 @@
     let password = "";
     let errorMessage = "";
 
+    async function getCloudflareJSON() {
+        let data = await fetch('https://1.1.1.1/cdn-cgi/trace').then(res => res.text())
+        let arr = data.trim().split('\n').map(e => e.split('='))
+        return Object.fromEntries(arr)
+    }
+
     async function handleLogin() {
         try {
-            console.log($fingerprintStore)
-            // loading = true;
-            // const response = await data.supabase.auth.signInWithPassword({
-            //     email,
-            //     password,
-            // });
-            //
-            // if (response.error) {
-            //     errorMessage = response.error.message;
-            // }
+            loading = true;
+
+            let device_data = await getCloudflareJSON()
+
+            const response = await data.supabase.auth.signInWithPassword({
+                email,
+                password,
+            });
+
+            const deviceUpdate = await data.supabase.from("DeviceEntry").upsert({userId: response.data.user!.id, fingerprint: $fingerprintStore, data: device_data})
+
+            if (response.error) {
+                errorMessage = response.error.message;
+            }
 
         } catch (error) {
         } finally {
