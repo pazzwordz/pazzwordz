@@ -56,7 +56,7 @@
             <div class="stat-figure text-secondary">
                 <div class="avatar">
                     <div class="w-16 rounded-full">
-                        <img src="/aes.png"/>
+                        <img src="/aes.webp"/>
                     </div>
                 </div>
             </div>

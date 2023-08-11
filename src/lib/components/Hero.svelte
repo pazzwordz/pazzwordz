@@ -4,7 +4,8 @@
     let date = "11 Aug. 2023";
 </script>
 
-<div class="hero min-h-[50vh] bg-base-200 rounded-xl">
+<div class="hero min-h-[50vh] bg-base-200 rounded-xl" style="background-image: url(/banner.webp);">
+    <div class="hero-overlay bg-base-300 bg-opacity-90"></div>
     <div class="hero-content text-center max-w-[90vw] flex-col lg:flex-row">
         <div class="flex flex-col justify-center">
             <h1 class="text-3xl lg:text-5xl  font-bold uppercase my-4">Simplicity is Security</h1>
