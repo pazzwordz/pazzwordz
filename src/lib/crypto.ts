@@ -1,5 +1,4 @@
 import {pbkdf2Sync} from "pbkdf2";
-import {vaultKeyStore} from "$lib/stores";
 import {createHash} from "sha256-uint8array";
 import * as aesjs from "aes-js";
 import {v4 as uuidv4} from 'uuid';

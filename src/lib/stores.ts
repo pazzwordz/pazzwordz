@@ -12,9 +12,6 @@ const passsthroughSerializer: Serializer<any> = {
     parse: (value) => value,
 }
 
-export const vaultKeyStore = persisted<string | null>("vaultKey", null, {
-    storage: "session",
-})
 
 // @ts-ignore
 export const otpKeyStore = persisted<Buffer>("otpKey", undefined, {

@@ -2,10 +2,16 @@
     import type {PageData} from "./$types";
     import {routes} from "$lib/navRoutes";
     import type {Row} from "$lib/database";
-    import {otpKeyStore, vaultKeyStore} from "$lib/stores";
+    import {otpKeyStore} from "$lib/stores";
     import {decryptHex, deriveKey, encryptText, generateOtpKey, sha256HashHex} from "$lib/crypto";
     import {onMount} from "svelte";
     import {goto} from "$app/navigation";
+    import {persisted} from "$lib/persisted";
+
+    const vaultKeyStore = persisted<string | null>("vaultKey", null, {
+        storage: "session",
+    })
+
 
     type PasswordEntry = Row<"PasswordEntry">
     type PasswordEntryView = Omit<PasswordEntry, "encryptedPassword" | "userId">
