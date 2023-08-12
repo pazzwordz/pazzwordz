@@ -95,3 +95,5 @@ fabric.properties
 node_modules/.package-lock.json
 node_modules/@fortawesome/fontawesome-common-types/attribution.js
 /school-sync-app/*
+/.idea/vcs.xml
+/.idea/inspectionProfiles/Project_Default.xml

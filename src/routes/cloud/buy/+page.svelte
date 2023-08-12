@@ -1,7 +1,15 @@
-<script>
+<script lang="ts">
     import {faCircleCheck} from "@fortawesome/free-regular-svg-icons";
     import Fa from "svelte-fa";
     import {routes} from "$lib/navRoutes";
+    import type {PageData} from "./$types.js";
+
+    export let data: PageData;
+
+    let stripeMonthly = "https://buy.stripe.com/test_00g29p6pd7wT5Ak144";
+    let stripeYearly = "https://buy.stripe.com/test_5kA29p3d14kH8Mw289";
+
+    let userId = data.session!.user.id;
 </script>
 
 <section class="pb-8">
@@ -48,7 +56,7 @@
                             </div>
                         </div>
                         <div class="form-control mt-6">
-                            <button class="btn btn-primary">Start Free Trail</button>
+                            <a class="btn btn-primary" href="{stripeMonthly}?client_reference_id={userId}" target="_blank">Subscribe</a>
                         </div>
                     </div>
                 </div>
@@ -83,7 +91,7 @@
                                 </div>
                             </div>
                             <div class="form-control mt-6">
-                                <button class="btn btn-primary">Subscribe</button>
+                                <a class="btn btn-primary" href="{stripeYearly}?client_reference_id={userId}" target="_blank">Subscribe</a>
                             </div>
                         </div>
                     </div>
