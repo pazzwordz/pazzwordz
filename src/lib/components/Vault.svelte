@@ -1,7 +1,7 @@
 <script lang="ts">
     import type {PasswordEntry, PasswordEntryView} from "$lib/types";
     import {setVaultKeyCloud, setVaultKeyLocal, vaultKeyStoreCloud, vaultKeyStoreLocal} from "$lib/stores";
-    import {decryptHex, deriveKey, generateOtpKey, sha256HashHex} from "$lib/crypto";
+    import {decryptHex, sha256HashHex} from "$lib/crypto";
     import {onMount} from "svelte";
     import {routes} from "$lib/navRoutes";
     import type {DataLayer} from "$lib/persistent/DataLayer";
@@ -75,7 +75,7 @@
 
     async function decryptPasswordOnly(entry: PasswordEntryView) {
         const encryptedText = await dataLayer.getEncryptedText(entry.id);
-        const key = deriveKey($usedVaultKeyStore!, 'sussysecretsalt');
+        const key = dataLayer.deriveSaltedKey($usedVaultKeyStore!);
         return decryptHex(encryptedText, key);
     }
 
@@ -110,7 +110,8 @@
 
     async function unlockVault() {
         if (await dataLayer.isValidVaultKeyHash(sha256HashHex(vaultKeyInput!))) {
-            setKeyFunction(vaultKeyInput!, generateOtpKey())
+            const otp = dataLayer.generateOtpKey();
+            setKeyFunction(vaultKeyInput!, otp)
         } else {
             console.log("wrong vault key")
         }
