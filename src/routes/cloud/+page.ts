@@ -5,10 +5,14 @@ export const load: PageLoad = async ({parent}) => {
 
     const {session, supabase} = await parent();
 
-    const {data: entry} = await supabase.from("UserData").select('*')
-
+    let hasPremium = false;
+    if(session != undefined) {
+        const response = await supabase.from("UserData").select('*')
+        if(response.data)
+            hasPremium = response.data[0].premium
+    }
     return {
         supabase: supabase,
-        hasPremium: entry![0].premium
+        hasPremium: hasPremium
     }
 }
