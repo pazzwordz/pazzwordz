@@ -22,6 +22,7 @@
             });
             if (response.error) {
                 errorMessage = response.error.message;
+                console.log(errorMessage)
                 throw response.error;
             } else {
                 const user = response.data!.user;
@@ -47,7 +48,7 @@
 
 <section class="w-full h-[60vh] flex items-center justify-center">
     <form class="flex flex-col gap-4 w-full max-w-xs" on:submit|preventDefault={handleSignUp}>
-        <h1 class="text-3xl font-bold">Login</h1>
+        <h1 class="text-3xl font-bold">Sign Up</h1>
         <div class="divider my-0"/>
         <div class="form-control w-full">
             <label class="label" for="username">
