@@ -6,8 +6,8 @@
 
     export let data: PageData;
 
-    let stripeMonthly = "https://buy.stripe.com/test_00g29p6pd7wT5Ak144";
-    let stripeYearly = "https://buy.stripe.com/test_5kA29p3d14kH8Mw289";
+    let stripeMonthly = "https://buy.stripe.com/cN24jcaXK1Y107ubII";
+    let stripeYearly = "https://buy.stripe.com/28o9Dw3vi1Y1aM8eUV";
 
     let userId = data.session!.user.id;
     let userEmail = data.session!.user.email;
