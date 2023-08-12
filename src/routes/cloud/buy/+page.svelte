@@ -2,7 +2,7 @@
     import {faCircleCheck} from "@fortawesome/free-regular-svg-icons";
     import Fa from "svelte-fa";
     import {routes} from "$lib/navRoutes";
-    import type {PageData} from "./$types.js";
+    import type {PageData} from "./$types";
 
     export let data: PageData;
 
@@ -10,6 +10,8 @@
     let stripeYearly = "https://buy.stripe.com/test_5kA29p3d14kH8Mw289";
 
     let userId = data.session!.user.id;
+    let userEmail = data.session!.user.email;
+
 </script>
 
 <section class="pb-8">
@@ -56,7 +58,7 @@
                             </div>
                         </div>
                         <div class="form-control mt-6">
-                            <a class="btn btn-primary" href="{stripeMonthly}?client_reference_id={userId}" target="_blank">Subscribe</a>
+                            <a class="btn btn-primary" href="{stripeMonthly}?client_reference_id={userId}&prefilled_email={userEmail}" target="_blank">Subscribe</a>
                         </div>
                     </div>
                 </div>
@@ -91,7 +93,7 @@
                                 </div>
                             </div>
                             <div class="form-control mt-6">
-                                <a class="btn btn-primary" href="{stripeYearly}?client_reference_id={userId}" target="_blank">Subscribe</a>
+                                <a class="btn btn-primary" href="{stripeYearly}?client_reference_id={userId}&prefilled_email={userEmail}" target="_blank">Subscribe</a>
                             </div>
                         </div>
                     </div>
