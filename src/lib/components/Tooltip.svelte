@@ -56,7 +56,7 @@
 
 <style>
     .delay-yes {
-        transition-delay: 400ms;
+        transition-delay: 500ms;
     }
 
     .delay-no {

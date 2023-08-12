@@ -14,6 +14,8 @@
     import ConfirmModal from "$lib/components/ConfirmModal.svelte";
     import GenPwModal from "$lib/components/GenPwModal.svelte";
     import Tooltip from "$lib/components/Tooltip.svelte";
+    import FuzzySearch from 'fuzzy-search'
+
 
     let decryptedEntries = new Map<string, string>();
 
@@ -38,7 +40,17 @@
         }
     }
 
+    let filterString: string = "";
     let entries = new Array<PasswordEntryView>;
+    $: filteredEntries = filter(entries, filterString);
+
+    function filter(entries: Array<PasswordEntryView>, filter: string) {
+        const entrySearcher = new FuzzySearch(entries, ["name", "user"], {
+            caseSensitive: false,
+        });
+        return entrySearcher.search(filter);
+    }
+
     let vaultKeyInput: string | undefined;
     let pazzView = 0;
 
@@ -148,7 +160,7 @@
             <span>Back</span>
         </a>
         <div class="flex flex-col gap-4 h-[75%] overflow-y-scroll no-scrollbar">
-            <input class="input input-bordered w-64" placeholder="Search"/>
+            <input class="input input-bordered w-64" placeholder="Search" bind:value={filterString}/>
             <div class="join">
                 <button class="btn join-item pointer-events-none">View</button>
                 <select class="select select-bordered join-item w-full" bind:value={pazzView}>
@@ -223,7 +235,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                    {#each entries as entry}
+                    {#each filteredEntries as entry}
                         <tr>
                             <td>{entry.name}</td>
                             <td class="flex gap-2 items-center">
@@ -281,7 +293,7 @@
                 </table>
             {:else if pazzView === 1}
                 <div class="grid grid-cols-3 gap-4 mt-4">
-                    {#each entries as entry}
+                    {#each filteredEntries as entry}
                         <div class="card w-full bg-base-100 shadow-xl">
                             <div class="card-body">
                                 <h2 class="card-title">{entry.name}</h2>
