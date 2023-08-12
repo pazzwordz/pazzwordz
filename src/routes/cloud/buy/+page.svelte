@@ -12,13 +12,6 @@
     let userId = data.session!.user.id;
     let userEmail = data.session!.user.email;
 
-    const shit = async () => {
-        let test = (await data.supabase.from('UserData').select('*', {count: 'exact'}).eq("stripeCustomerId", "cus_ORDUoXnuYrb56B")).count !== 0;
-        console.log(test)
-    }
-
-    shit();
-
 </script>
 
 <section class="pb-8">
