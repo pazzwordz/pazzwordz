@@ -1,11 +1,14 @@
 import {redirect} from "@sveltejs/kit";
+import type {PageLoad} from "./$types";
 
-export async function load({parent}: any) {
+export const load: PageLoad = async ({parent}) => {
+
     const {session, supabase} = await parent();
-    if (!session)
-        throw redirect(302, '/login')
+
+    const {data: entry} = await supabase.from("UserData").select('*')
 
     return {
-        supabase: supabase
+        supabase: supabase,
+        hasPremium: entry![0].premium
     }
 }

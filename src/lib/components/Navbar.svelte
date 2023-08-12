@@ -42,10 +42,10 @@
                     </li>
                 </ul>
             </div>
-            <a class="btn btn-ghost normal-case text-xl hidden lg:flex" href="/">PAZZWORDZ</a>
+            <a class="btn btn-ghost normal-case text-xl hidden lg:flex" href="/">PAZZWORDZ<span class="text-secondary -mx-1">.io</span></a>
         </div>
         <div class="navbar-end">
-            <a class="btn btn-ghost normal-case text-xl lg:hidden" href="/">PAZZWORDZ</a>
+            <a class="btn btn-ghost normal-case text-xl lg:hidden" href="/">PAZZWORDZ<span class="text-secondary -mx-1">.io</span></a>
             <ul class="menu menu-horizontal px-1 hidden lg:flex font-medium">
                 <li><a href="/">Home</a></li>
                 <li><a href={routes.pricing}>Pricing</a></li>
