@@ -45,7 +45,7 @@
     $: filteredEntries = filter(entries, filterString);
 
     function filter(entries: Array<PasswordEntryView>, filter: string) {
-        const entrySearcher = new FuzzySearch(entries, ["name", "user"], {
+        const entrySearcher = new FuzzySearch(entries, ["location", "user"], {
             caseSensitive: false,
         });
         return entrySearcher.search(filter);
@@ -54,7 +54,7 @@
     let vaultKeyInput: string | undefined;
     let pazzView = 0;
 
-    let addPazzName: string | undefined = undefined;
+    let addPazzLocation: string | undefined = undefined;
     let addPazzUser: string | undefined = undefined;
     let addPazzPass: string | undefined = undefined;
 
@@ -85,7 +85,7 @@
             await refreshEntries();
         }, undefined, {
             header: "Delete Password",
-            description: `Are you sure you want to delete password "${entry.name}"`
+            description: `Are you sure you want to delete password "${entry.location}"`
         })
     }
 
@@ -119,10 +119,10 @@
     }
 
     async function addPassword() {
-        const entry = await dataLayer.createPasswordEntry($usedVaultKeyStore!, addPazzPass!, addPazzName!, addPazzUser!)
+        const entry = await dataLayer.createPasswordEntry($usedVaultKeyStore!, addPazzPass!, addPazzLocation!, addPazzUser!)
         entries.push(entry)
         entries = entries;
-        addPazzName = undefined;
+        addPazzLocation = undefined;
         addPazzUser = undefined;
         addPazzPass = undefined;
     }
@@ -171,7 +171,7 @@
         </div>
         <form class="flex flex-col gap-4" on:submit={addPassword}>
             <p class="font-medium text-lg">Add Pazzword</p>
-            <input class="input input-bordered w-64" placeholder="Name" bind:value={addPazzName}/>
+            <input class="input input-bordered w-64" placeholder="Location" bind:value={addPazzLocation}/>
             <input class="input input-bordered w-64" placeholder="User" bind:value={addPazzUser}/>
             <div class="relative">
                 <input class="input input-bordered w-64" placeholder="Password" bind:value={addPazzPass}/>
@@ -187,7 +187,7 @@
                 </Tooltip>
             </div>
             <button class="btn btn-success btn-outline w-64" type="submit"
-                    disabled="{addPazzName === undefined || addPazzUser === undefined ||
+                    disabled="{addPazzLocation === undefined || addPazzUser === undefined ||
                     addPazzPass === undefined}">Add
                 Pazzword
             </button>
@@ -228,7 +228,7 @@
                 <table class="table table-zebra table-fixed mt-4">
                     <thead>
                     <tr>
-                        <td>Name</td>
+                        <td>location</td>
                         <td>User</td>
                         <td>Password</td>
                         <td></td>
@@ -237,7 +237,7 @@
                     <tbody>
                     {#each filteredEntries as entry}
                         <tr>
-                            <td>{entry.name}</td>
+                            <td>{entry.location}</td>
                             <td class="flex gap-2 items-center">
                                 <span>{entry.user}</span>
                                 <Tooltip text="Copy" class="relative">
@@ -296,7 +296,7 @@
                     {#each filteredEntries as entry}
                         <div class="card w-full bg-base-100 shadow-xl">
                             <div class="card-body">
-                                <h2 class="card-title">{entry.name}</h2>
+                                <h2 class="card-title">{entry.location}</h2>
                                 <p>{entry.user}</p>
                                 <div class="card-actions justify-end">
                                     <button class="btn btn-primary" on:click={() => showDecrypt(entry)}>Decrypt</button>

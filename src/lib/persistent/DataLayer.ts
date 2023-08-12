@@ -8,7 +8,7 @@ import {v4 as uuid4} from "uuid"
 export interface DataLayer {
     getPasswordEntries(): Promise<Array<PasswordEntryView>>
 
-    createPasswordEntry(vaultKey: string, password: string, name: string, user: string): Promise<PasswordEntryView>
+    createPasswordEntry(vaultKey: string, password: string, location: string, user: string): Promise<PasswordEntryView>
 
     isValidVaultKeyHash(hash: string): Promise<boolean>
 
@@ -30,15 +30,15 @@ export class DataLayerCloud implements DataLayer {
         return result.data![0].encryptedPassword;
     }
 
-    public async createPasswordEntry(vaultKey: string, password: string, name: string, user: string): Promise<PasswordEntryView> {
+    public async createPasswordEntry(vaultKey: string, password: string, location: string, user: string): Promise<PasswordEntryView> {
         const key = deriveKey(vaultKey, 'sussysecretsalt');
         const encryptedPassword = encryptText(password.normalize("NFKD"), key);
         const result = await this.supabase.from("PasswordEntry").insert({
-            name: name,
+            location: location,
             user: user,
             encryptedPassword: encryptedPassword,
             userId: this.userId
-        }).select("id, name, user")
+        }).select("id, location, user")
         return result.data![0] as PasswordEntryView;
     }
 
@@ -49,7 +49,7 @@ export class DataLayerCloud implements DataLayer {
     }
 
     public async getPasswordEntries() {
-        const result = await this.supabase.from("PasswordEntry").select("id, name, user")
+        const result = await this.supabase.from("PasswordEntry").select("id, location, user")
         return result.data!
     }
 }
@@ -87,13 +87,13 @@ export class DataLayerLocal implements DataLayer {
         this.storage.setItem("vaultStorage", this.data);
     }
 
-    public async createPasswordEntry(vaultKey: string, password: string, name: string, user: string): Promise<PasswordEntryView> {
+    public async createPasswordEntry(vaultKey: string, password: string, location: string, user: string): Promise<PasswordEntryView> {
         const key = deriveKey(vaultKey, 'sussysecretsalt');
         const encryptedPassword = encryptText(password.normalize("NFKD"), key);
         const newId = uuid4()
         const newEntry: PasswordEntry = {
             id: newId,
-            name: name,
+            location: location,
             user: user,
             userId: "UserId",
             encryptedPassword: encryptedPassword
