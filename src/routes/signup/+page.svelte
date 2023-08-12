@@ -10,7 +10,6 @@
     let loading = false;
     let email = "";
     let password = "";
-    let vaultPassword = "";
     let errorMessage = "";
 
     async function handleSignUp() {
@@ -30,10 +29,6 @@
                 const supabase = data.supabase as SupabaseClient<Database>;
                 //ToDo: salt->hash->pepper->db should be done server side,
                 // generate salt and pepper based on user data deterministically
-                supabase.from("VaultKey").insert({
-                    id: newId,
-                    vaultKeyHash: createHash().update(vaultPassword).digest("hex")
-                })
                 goto("/login")
             }
         } catch (error) {
@@ -63,13 +58,6 @@
             </label>
             <input type="password" id="password" placeholder="••••••••" class="input input-bordered w-full"
                    bind:value={password}/>
-        </div>
-        <div class="form-control w-full">
-            <label class="label" for="vault-password">
-                <span class="label-text font-medium">Vault Password</span>
-            </label>
-            <input type="password" id="vault-password" placeholder="••••••••" class="input input-bordered w-full"
-                   bind:value={vaultPassword}/>
         </div>
         <button type="submit" class="btn btn-outline btn-primary w-full">Sign up</button>
     </form>

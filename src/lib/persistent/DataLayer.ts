@@ -15,10 +15,38 @@ export interface DataLayer {
     getEncryptedText(id: string): Promise<string>
 
     deleteEntry(id: string): Promise<void>
+
+    isValidVaultKeyHash(hash: string): Promise<boolean>
+
+    isVaultKeyHashSet(): Promise<boolean>
+
+    setVaultKeyHash(hash: string): Promise<void>
+
+    getVaultKeyHash(): Promise<string>
 }
 
 export class DataLayerCloud implements DataLayer {
     constructor(private supabase: SupabaseClient<Database>, private userId: string) {
+    }
+
+    public async isVaultKeyHashSet(): Promise<boolean> {
+        const response = await this.supabase.from("VaultKey")
+            .select("*", {count: "exact"}).eq("id", this.userId);
+        return response.count != 0;
+    }
+
+    public async setVaultKeyHash(hash: string): Promise<void> {
+        await this.supabase.from("VaultKey")
+            .upsert({
+                id: this.userId,
+                vaultKeyHash: hash
+            });
+    }
+
+    public async getVaultKeyHash(): Promise<string> {
+        const response = await this.supabase.from("VaultKey").select("*")
+            .eq("id", this.userId)
+        return response.data![0].vaultKeyHash
     }
 
     public async deleteEntry(id: string) {
@@ -132,19 +160,19 @@ export class DataLayerLocal implements DataLayer {
     }
 
     public async isValidVaultKeyHash(hash: string): Promise<boolean> {
-        return Promise.resolve(this.getVaultKeyHash() == hash);
+        return Promise.resolve(await this.getVaultKeyHash() == hash);
     }
 
-    public isVaultKeyHashSet() {
-        return this.getVaultKeyHash() != null
+    public async isVaultKeyHashSet() {
+        return Promise.resolve(await this.getVaultKeyHash() != null)
     }
 
-    public setVaultKeyHash(hash: string) {
+    public async setVaultKeyHash(hash: string) {
         this.data.vaultKeyHash = hash;
         this.pushToStorage()
     }
 
     public getVaultKeyHash() {
-        return this.data.vaultKeyHash;
+        return Promise.resolve(this.data.vaultKeyHash!);
     }
 }
