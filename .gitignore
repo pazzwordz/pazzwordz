@@ -4,12 +4,12 @@ node_modules
 /.svelte-kit
 /package
 .env
-!.env.example
 .vercel
 .output
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 .vite
+*.env*
 
 *.psd
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio, WebStorm and Rider
