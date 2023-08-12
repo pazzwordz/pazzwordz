@@ -1,9 +1,10 @@
 <script lang="ts">
-    import { createEventDispatcher } from 'svelte';
+    import {createEventDispatcher} from 'svelte';
+
     const dispatch = createEventDispatcher();
 
     let generatedPassword: string = "";
-    let length: number = 20
+    let length = 16
 
     async function generatePassword() {
         const buffer = new Uint8Array(length);
@@ -19,14 +20,15 @@
     }
 </script>
 
-<div>
-    <div class="">
-        <div class="flex gap-4">
-            <label>Length</label>
-            <input type="number" bind:value={length}>
-            <label>Special Characters</label>
-            <button on:click={generatePassword}>Generate</button>
-        </div>
+<div class="flex flex-col gap-6 w-full h-full">
+    <div class="w-full flex items-center justify-center">
+        <div>{length}</div>
+    </div>
+    <input type="range" min="8" max="26" class="range" bind:value={length}
+           on:change={() => generatePassword()}/>
+    <button class="btn btn-success" on:click={generatePassword}>Generate</button>
+    <div class="flex gap-2">
+        <div>Your Password:</div>
         <div>{generatedPassword}</div>
     </div>
 </div>

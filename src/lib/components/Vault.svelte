@@ -6,13 +6,14 @@
     import {routes} from "$lib/navRoutes";
     import type {DataLayer} from "$lib/persistent/DataLayer";
     import {copyToClipboard} from "$lib/functions";
-    import {faCopy, faEye, faEyeSlash, faTrash} from "@fortawesome/free-solid-svg-icons";
+    import {faCopy, faEye, faEyeSlash, faKey, faTrash} from "@fortawesome/free-solid-svg-icons";
     import Fa from "svelte-fa"
     import {DataLayerCloud, DataLayerLocal} from "$lib/persistent/DataLayer";
     import type {Database} from "$lib/database.types";
     import type {SupabaseClient} from "@supabase/supabase-js";
     import ConfirmModal from "$lib/components/ConfirmModal.svelte";
     import GenPwModal from "$lib/components/GenPwModal.svelte";
+    import Tooltip from "$lib/components/Tooltip.svelte";
 
     let decryptedEntries = new Map<string, string>();
 
@@ -160,10 +161,22 @@
             <p class="font-medium text-lg">Add Pazzword</p>
             <input class="input input-bordered w-64" placeholder="Name" bind:value={addPazzName}/>
             <input class="input input-bordered w-64" placeholder="User" bind:value={addPazzUser}/>
-            <input class="input input-bordered w-64" placeholder="Password" bind:value={addPazzPass}/>
-            <button on:click={generateNewPassword}>Generate Password</button>
-            <button class="btn btn-success btn-outline w-64"
-                    disabled="{addPazzName === undefined || addPazzUser === undefined || addPazzPass === undefined}">Add
+            <div class="relative">
+                <input class="input input-bordered w-64" placeholder="Password" bind:value={addPazzPass}/>
+<!--                <div class="tooltip absolute right-2 top-[50%] translate-y-[-50%]" data-tip="Generate Password">-->
+<!--                    <button type="button" class="btn btn-outline btn-xs border-none" on:click={generateNewPassword}>-->
+<!--                        <Fa icon={faKey} class="stroke-current"  />-->
+<!--                    </button>-->
+<!--                </div>-->
+                <Tooltip text="Generate Password" class="absolute right-2 top-[50%] translate-y-[-50%]">
+                    <button type="button" class="btn btn-outline btn-xs border-none" on:click={generateNewPassword}>
+                        <Fa icon={faKey} class="stroke-current"  />
+                    </button>
+                </Tooltip>
+            </div>
+            <button class="btn btn-success btn-outline w-64" type="submit"
+                    disabled="{addPazzName === undefined || addPazzUser === undefined ||
+                    addPazzPass === undefined}">Add
                 Pazzword
             </button>
         </form>
@@ -184,18 +197,18 @@
                 </form>
             </div>
         {:else if $usedVaultKeyStore == null}
-        <div class="absolute top-0 left-0 bg-base-100/90 w-full h-full flex flex-col gap-8 items-center justify-center z-10 text-center">
-            <b class="text-4xl">Enter Master Password</b>
-            <form class="join" on:submit={unlockVault}>
-                <div>
+            <div class="absolute top-0 left-0 bg-base-100/90 w-full h-full flex flex-col gap-8 items-center justify-center z-10 text-center">
+                <b class="text-4xl">Enter Master Password</b>
+                <form class="join" on:submit={unlockVault}>
                     <div>
-                        <input class="input input-bordered join-item" bind:value={vaultKeyInput}
-                               placeholder="Vault Key"/>
+                        <div>
+                            <input class="input input-bordered join-item" bind:value={vaultKeyInput}
+                                   placeholder="Vault Key"/>
+                        </div>
                     </div>
-                </div>
-                <button class="btn join-item">Unlock</button>
-            </form>
-        </div>
+                    <button class="btn join-item">Unlock</button>
+                </form>
+            </div>
         {/if}
         <h2 class="text-4xl font-bold">Your Pazzwordz</h2>
         <div class="lg:h-[95%] overflow-y-scroll">
@@ -215,10 +228,12 @@
                             <td>{entry.name}</td>
                             <td class="flex gap-2 items-center">
                                 <span>{entry.user}</span>
-                                <button class="btn btn-xs btn-outline btn-square border-none"
-                                        on:click={() => copyToClipboard(entry.user)}>
-                                    <Fa icon={faCopy} class="stroke-current" size="lg"/>
-                                </button>
+                                <Tooltip text="Copy" class="relative">
+                                    <button class="btn btn-xs btn-outline btn-square border-none"
+                                            on:click={() => copyToClipboard(entry.user)}>
+                                        <Fa icon={faCopy} class="stroke-current" size="lg"/>
+                                    </button>
+                                </Tooltip>
                             </td>
                             <td>
                                 {#if decryptedEntries.has(entry.id)}
@@ -233,24 +248,32 @@
                             </td>
                             <td>
                                 {#if decryptedEntries.has(entry.id)}
-                                    <button class="btn btn-xs btn-outline btn-square border-none"
-                                            on:click={() => hideDecrypt(entry)}>
-                                        <Fa icon={faEyeSlash} class="stroke-current" size="lg"/>
-                                    </button>
+                                    <Tooltip text="Decrypt">
+                                        <button class="btn btn-xs btn-outline btn-square border-none"
+                                                on:click={() => hideDecrypt(entry)}>
+                                            <Fa icon={faEyeSlash} class="stroke-current" size="lg"/>
+                                        </button>
+                                    </Tooltip>
                                 {:else}
-                                    <button class="btn btn-xs btn-outline btn-square border-none"
-                                            on:click={() => showDecrypt(entry)}>
-                                        <Fa icon={faEye} class="stroke-current" size="lg"/>
-                                    </button>
+                                    <Tooltip text="Hide">
+                                        <button class="btn btn-xs btn-outline btn-square border-none"
+                                                on:click={() => showDecrypt(entry)}>
+                                            <Fa icon={faEye} class="stroke-current" size="lg"/>
+                                        </button>
+                                    </Tooltip>
                                 {/if}
-                                <button class="btn btn-xs btn-outline btn-square border-none"
-                                        on:click={() => pwToClipboard(entry)}>
-                                    <Fa icon={faCopy} class="stroke-current" size="lg"/>
-                                </button>
-                                <button class="btn btn-xs btn-outline btn-square border-none"
-                                        on:click={() => deleteEntry(entry)}>
-                                    <Fa icon={faTrash} class="stroke-current" color="#bf1313" size="lg"/>
-                                </button>
+                                <Tooltip text="Copy">
+                                    <button class="btn btn-xs btn-outline btn-square border-none"
+                                            on:click={() => pwToClipboard(entry)}>
+                                        <Fa icon={faCopy} class="stroke-current" size="lg"/>
+                                    </button>
+                                </Tooltip>
+                                <Tooltip text="Delete">
+                                    <button class="btn btn-xs btn-outline btn-square border-none"
+                                            on:click={() => deleteEntry(entry)}>
+                                        <Fa icon={faTrash} class="stroke-current" color="#bf1313" size="lg"/>
+                                    </button>
+                                </Tooltip>
                             </td>
                         </tr>
                     {/each}
