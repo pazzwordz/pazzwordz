@@ -6,6 +6,7 @@
     export let data: PageData;
 
     let username = data.session!.user.email;
+
 </script>
 <svelte:head>
     <title>Pazzwordz | Cloud</title>
@@ -15,7 +16,7 @@
 
     <div class="card w-80 lg:w-96 bg-base-100 shadow-xl my-8">
         <div class="card-body">
-            <h2 class="card-title">Your Plan: Free</h2>
+            <h2 class="card-title">Your Plan: {data.hasPremium ? "CloudPazz" : "Free"}</h2>
             <p>Manage your Plan in your Stripe Dashboard here!</p>
             <div class="card-actions justify-end">
                 <a class="btn btn-outline" href="#">Change</a>
