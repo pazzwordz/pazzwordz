@@ -5,7 +5,7 @@
     import {onMount} from "svelte";
     import {routes} from "$lib/navRoutes";
     import type {DataLayer} from "$lib/persistent/DataLayer";
-    import {copyToClipboard} from "$lib/functions";
+    import {copyToClipboard, isValidHttpUrl} from "$lib/functions";
     import {faCopy, faEye, faEyeSlash, faKey, faTrash} from "@fortawesome/free-solid-svg-icons";
     import Fa from "svelte-fa"
     import {DataLayerCloud, DataLayerLocal} from "$lib/persistent/DataLayer";
@@ -101,10 +101,9 @@
         decryptedEntries = decryptedEntries
     }
 
-    function createVaultKeyLocal() {
-        const localLayer = toLocalLayer();
+    async function createVaultKey() {
         const hash = sha256HashHex(vaultKeyInput!);
-        localLayer.setVaultKeyHash(hash);
+        await dataLayer.setVaultKeyHash(hash);
         vaultKeyInput = undefined;
         dataLayer = dataLayer
     }
@@ -135,9 +134,6 @@
         copyToClipboard(password);
     }
 
-    function toLocalLayer() {
-        return <DataLayerLocal>dataLayer
-    }
 
     function generateNewPassword() {
         genPwModal.show((pw) => {
@@ -175,14 +171,14 @@
             <input class="input input-bordered w-64" placeholder="User" bind:value={addPazzUser}/>
             <div class="relative">
                 <input class="input input-bordered w-64" placeholder="Password" bind:value={addPazzPass}/>
-<!--                <div class="tooltip absolute right-2 top-[50%] translate-y-[-50%]" data-tip="Generate Password">-->
-<!--                    <button type="button" class="btn btn-outline btn-xs border-none" on:click={generateNewPassword}>-->
-<!--                        <Fa icon={faKey} class="stroke-current"  />-->
-<!--                    </button>-->
-<!--                </div>-->
+                <!--                <div class="tooltip absolute right-2 top-[50%] translate-y-[-50%]" data-tip="Generate Password">-->
+                <!--                    <button type="button" class="btn btn-outline btn-xs border-none" on:click={generateNewPassword}>-->
+                <!--                        <Fa icon={faKey} class="stroke-current"  />-->
+                <!--                    </button>-->
+                <!--                </div>-->
                 <Tooltip text="Generate Password" class="absolute right-2 top-[50%] translate-y-[-50%]">
                     <button type="button" class="btn btn-outline btn-xs border-none" on:click={generateNewPassword}>
-                        <Fa icon={faKey} class="stroke-current"  />
+                        <Fa icon={faKey} class="stroke-current"/>
                     </button>
                 </Tooltip>
             </div>
@@ -195,32 +191,36 @@
     </div>
     <div class="divider divider-vertical lg:divider-horizontal"/>
     <div class="w-full relative">
-        {#if dataLayer instanceof DataLayerLocal && !toLocalLayer().isVaultKeyHashSet()}
-            <div class="absolute top-0 left-0 bg-base-100/90 w-full h-full flex flex-col gap-8 items-center justify-center z-10 text-center">
-                <b class="text-4xl">Crete new local vault key</b>
-                <form class="join" on:submit={createVaultKeyLocal}>
-                    <div>
-                        <div>
-                            <input class="input input-bordered join-item" bind:value={vaultKeyInput}
-                                   placeholder="Vault Key"/>
-                        </div>
+        {#if dataLayer != undefined}
+            {#await dataLayer.isVaultKeyHashSet() then isSet}
+                {#if !isSet}
+                    <div class="absolute top-0 left-0 bg-base-100/90 w-full h-full flex flex-col gap-8 items-center justify-center z-10 text-center">
+                        <b class="text-4xl">Crete new vault key</b>
+                        <form class="join" on:submit={createVaultKey}>
+                            <div>
+                                <div>
+                                    <input class="input input-bordered join-item" bind:value={vaultKeyInput}
+                                           placeholder="Vault Key"/>
+                                </div>
+                            </div>
+                            <button class="btn join-item">Unlock</button>
+                        </form>
                     </div>
-                    <button class="btn join-item">Unlock</button>
-                </form>
-            </div>
-        {:else if $usedVaultKeyStore == null}
-            <div class="absolute top-0 left-0 bg-base-100/90 w-full h-full flex flex-col gap-8 items-center justify-center z-10 text-center">
-                <b class="text-4xl">Enter Master Password</b>
-                <form class="join" on:submit={unlockVault}>
-                    <div>
-                        <div>
-                            <input class="input input-bordered join-item" bind:value={vaultKeyInput}
-                                   placeholder="Vault Key"/>
-                        </div>
+                {:else if $usedVaultKeyStore == null}
+                    <div class="absolute top-0 left-0 bg-base-100/90 w-full h-full flex flex-col gap-8 items-center justify-center z-10 text-center">
+                        <b class="text-4xl">Enter Master Password</b>
+                        <form class="join" on:submit={unlockVault}>
+                            <div>
+                                <div>
+                                    <input class="input input-bordered join-item" bind:value={vaultKeyInput}
+                                           placeholder="Vault Key"/>
+                                </div>
+                            </div>
+                            <button class="btn join-item">Unlock</button>
+                        </form>
                     </div>
-                    <button class="btn join-item">Unlock</button>
-                </form>
-            </div>
+                {/if}
+            {/await}
         {/if}
         <h2 class="text-4xl font-bold">Your Pazzwordz</h2>
         <div class="lg:h-[95%] overflow-y-scroll">
@@ -237,7 +237,13 @@
                     <tbody>
                     {#each filteredEntries as entry}
                         <tr>
-                            <td>{entry.location}</td>
+                            <td>
+                                {#if isValidHttpUrl(entry.location)}
+                                    <a class="break-words link link-hover" href="{entry.location}">{entry.location}</a>
+                                {:else}
+                                    <div class="break-words">{entry.location}</div>
+                                {/if}
+                            </td>
                             <td class="flex gap-2 items-center">
                                 <span>{entry.user}</span>
                                 <Tooltip text="Copy" class="relative">
@@ -250,11 +256,11 @@
                             <td>
                                 {#if decryptedEntries.has(entry.id)}
                                     <div class="flex gap-2 items-center">
-                                        <span>{decryptedEntries.get(entry.id)}</span>
+                                        <span class="break-words">{decryptedEntries.get(entry.id)}</span>
                                     </div>
                                 {:else }
                                     <div class="flex gap-2">
-                                        <div>********</div>
+                                        <div class="break-words">********</div>
                                     </div>
                                 {/if}
                             </td>
@@ -296,7 +302,7 @@
                     {#each filteredEntries as entry}
                         <div class="card w-full bg-base-100 shadow-xl">
                             <div class="card-body">
-                                <h2 class="card-title">{entry.location}</h2>
+                                <h2 class="card-title break-words">{entry.location}</h2>
                                 <p>{entry.user}</p>
                                 <div class="card-actions justify-end">
                                     <button class="btn btn-primary" on:click={() => showDecrypt(entry)}>Decrypt</button>
