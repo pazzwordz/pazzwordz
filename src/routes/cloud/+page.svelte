@@ -19,7 +19,7 @@
             <h2 class="card-title">Your Plan: {data.hasPremium ? "CloudPazz" : "Free"}</h2>
             <p>Manage your Plan in your Stripe Dashboard here!</p>
             <div class="card-actions justify-end">
-                <a class="btn btn-outline" href="#">Change</a>
+                <a class="btn btn-outline" href={routes.cloud.buy}>Change</a>
             </div>
         </div>
     </div>

@@ -3,6 +3,7 @@ export const routes = {
     local: "/local",
     cloud: {
         cloud: "/cloud",
+        buy: "/cloud/buy",
         cloudVault: "/cloud/vault",
         cloudDevices: "/cloud/devices",
     },
