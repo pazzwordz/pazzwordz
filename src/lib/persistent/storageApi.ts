@@ -13,6 +13,7 @@ export interface ITypedStorage<T> {
 }
 
 
+
 export class TypedStorage<T> implements ITypedStorage<T> {
     private readonly storage: Storage;
 

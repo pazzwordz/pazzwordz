@@ -28,3 +28,7 @@ export function decryptHex(encryptedHex: string, key: ByteSource) {
     return decryptedText;
 }
 
+export function generateOtpKey() {
+    let myuuid = uuidv4();
+    return deriveKey(myuuid, "mysupersecretsalt")
+}
