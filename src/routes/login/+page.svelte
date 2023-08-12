@@ -33,9 +33,12 @@
 
             if (response.error) {
                 errorMessage = response.error.message;
+                console.log(response.error)
+                throw response.error;
             }
 
             await goto(routes.cloud.cloud);
+
 
         } catch (error) {
         } finally {
@@ -53,17 +56,17 @@
         <h1 class="text-3xl font-bold">Login</h1>
         <div class="divider my-0"/>
         <div class="form-control w-full">
-            <label class="label" for="">
+            <label class="label" for="username">
                 <span class="label-text font-medium">Email</span>
             </label>
-            <input type="text" placeholder="your@email.com" class="input input-bordered w-full" bind:value={email}/>
+            <input type="text" id="username" placeholder="your@email.com" class="input input-bordered w-full" bind:value={email}/>
         </div>
 
         <div class="form-control w-full">
-            <label class="label" for="">
+            <label class="label" for="password">
                 <span class="label-text font-medium">Password</span>
             </label>
-            <input type="password" placeholder="••••••••" class="input input-bordered w-full" bind:value={password}/>
+            <input type="password" id="password" placeholder="••••••••" class="input input-bordered w-full" bind:value={password}/>
         </div>
         <button type="submit" class="btn btn-outline btn-primary w-full">Sign in</button>
         <div class="flex w-full justify-between font-medium text-sm">
