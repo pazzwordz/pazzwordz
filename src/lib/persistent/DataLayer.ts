@@ -1,9 +1,9 @@
 import type {PasswordEntryView} from "$lib/types";
 import type {SupabaseClient} from "@supabase/supabase-js";
 import type {Database} from "$lib/database.types";
-import {deriveKey, encryptText, sha256HashHex} from "$lib/crypto";
+import {deriveKey, deriveKey as deriveKeyCrypto, encryptText, sha256HashHex} from "$lib/crypto";
 import {error} from "@sveltejs/kit";
-import {v4 as uuid4} from "uuid"
+import {v4 as uuidv4, v4 as uuid4} from "uuid"
 
 export interface DataLayer {
     getPasswordEntries(): Promise<Array<PasswordEntryView>>
@@ -23,10 +23,24 @@ export interface DataLayer {
     setVaultKeyHash(hash: string): Promise<void>
 
     getVaultKeyHash(): Promise<string>
+
+    deriveKey(text: string): Buffer
+
+    generateOtpKey(): Buffer
+
 }
 
 export class DataLayerCloud implements DataLayer {
     constructor(private supabase: SupabaseClient<Database>, private userId: string) {
+    }
+
+    public generateOtpKey() {
+        let myuuid = uuidv4();
+        return deriveKey(myuuid, this.userId)
+    }
+
+    public deriveKey(text: string): Buffer {
+        return deriveKeyCrypto(text, this.userId);
     }
 
     public async isVaultKeyHashSet(): Promise<boolean> {
@@ -59,7 +73,7 @@ export class DataLayerCloud implements DataLayer {
     }
 
     public async createPasswordEntry(vaultKey: string, password: string, location: string, user: string): Promise<PasswordEntryView> {
-        const key = deriveKey(vaultKey, 'sussysecretsalt');
+        const key = this.deriveKey(vaultKey);
         const encryptedPassword = encryptText(password.normalize("NFKD"), key);
         const result = await this.supabase.from("PasswordEntry").insert({
             location: location,
@@ -111,12 +125,21 @@ export class DataLayerLocal implements DataLayer {
         this.pushToStorage()
     }
 
+    public generateOtpKey() {
+        let myuuid = uuidv4();
+        return deriveKey(myuuid, "saltysecretsuper")
+    }
+
+    public deriveKey(text: string): Buffer {
+        return deriveKeyCrypto(text, "supersecretsalt");
+    }
+
     private pushToStorage() {
         this.storage.setItem("vaultStorage", this.data);
     }
 
     public async createPasswordEntry(vaultKey: string, password: string, location: string, user: string): Promise<PasswordEntryView> {
-        const key = deriveKey(vaultKey, 'sussysecretsalt');
+        const key = this.deriveKey(vaultKey);
         const encryptedPassword = encryptText(password.normalize("NFKD"), key);
         const newId = uuid4()
         const newEntry: PasswordEntry = {

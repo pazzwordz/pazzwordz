@@ -6,11 +6,6 @@
     import Pricing from "$lib/components/Pricing.svelte";
 
     export let data
-
-    const handleSignOut = async () => {
-        await data.supabase.auth.signOut()
-    }
-
 </script>
 
 <svelte:head>
