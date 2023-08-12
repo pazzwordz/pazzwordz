@@ -12,6 +12,7 @@
     import type {Database} from "$lib/database.types";
     import type {SupabaseClient} from "@supabase/supabase-js";
     import ConfirmModal from "$lib/components/ConfirmModal.svelte";
+    import GenPwModal from "$lib/components/GenPwModal.svelte";
 
     let decryptedEntries = new Map<string, string>();
 
@@ -19,6 +20,7 @@
     export let userId: string | undefined = undefined
 
     let confirmModal: ConfirmModal;
+    let genPwModal: GenPwModal;
 
     let dataLayer: DataLayer;
 
@@ -124,10 +126,16 @@
         return <DataLayerLocal>dataLayer
     }
 
+    function generateNewPassword() {
+        genPwModal.show((pw) => {
+            addPazzPass = pw;
+        })
+    }
 
 </script>
 
 <ConfirmModal bind:this={confirmModal}/>
+<GenPwModal bind:this={genPwModal}/>
 <div class="w-full flex flex-col lg:flex-row gap-4 lg:p-8 h-[80vh]">
     <div class="lg:w-1/5 flex flex-col items-center gap-4">
         <a class="btn w-64 btn-outline flex gap-2 items-center" href={routes.cloud.cloud}>
@@ -153,6 +161,7 @@
             <input class="input input-bordered w-64" placeholder="Name" bind:value={addPazzName}/>
             <input class="input input-bordered w-64" placeholder="User" bind:value={addPazzUser}/>
             <input class="input input-bordered w-64" placeholder="Password" bind:value={addPazzPass}/>
+            <button on:click={generateNewPassword}>Generate Password</button>
             <button class="btn btn-success btn-outline w-64"
                     disabled="{addPazzName === undefined || addPazzUser === undefined || addPazzPass === undefined}">Add
                 Pazzword
