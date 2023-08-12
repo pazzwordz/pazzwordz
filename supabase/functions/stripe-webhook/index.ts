@@ -17,6 +17,7 @@ serve(async (request) => {
     const signature = request.headers.get("Stripe-Signature");
 
     const body = await request.text();
+
     let receivedEvent;
     try {
         receivedEvent = await stripe.webhooks.constructEventAsync(
