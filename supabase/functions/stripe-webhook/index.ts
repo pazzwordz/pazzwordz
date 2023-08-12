@@ -12,6 +12,16 @@ function getSupabaseAdminClient() {
     );
 }
 
+async function customerExists(client: any, stripeCustomerId: string) {
+    const response = await client.from('UserData').select('*', {count: 'exact'}).eq("stripeCustomerId", stripeCustomerId)
+    return response.count !== 0
+}
+
+async function delay(ms = 0) {
+    return new Promise((resolve) => setTimeout(resolve, ms))
+}
+
+
 serve(async (request) => {
 
     const signature = request.headers.get("Stripe-Signature");
@@ -60,22 +70,28 @@ serve(async (request) => {
 
     if (retrievedEvent.type === "customer.subscription.updated") {
         const supabaseClient = getSupabaseAdminClient();
-        const sr = await supabaseClient.from("UserData").update(
-            {
-                premium: true
-            }
-        ).eq("stripeCustomerId", retrievedEvent.data.object.customer);
-        console.log(sr);
-        console.log(`customer.subscription.updated for ${retrievedEvent.data.object.customer}`)
+        let customerId = retrievedEvent.data.object.customer;
+        let canUpdatePremium = await customerExists(supabaseClient, customerId)
+        let cnt = 0;
+        while (!canUpdatePremium && cnt < 10) {
+            await delay(500);
+            canUpdatePremium = await customerExists(supabaseClient, customerId)
+        }
+
+        if (canUpdatePremium) {
+            const sr = await supabaseClient.from("UserData").update({premium: true})
+                .eq("stripeCustomerId", retrievedEvent.data.object.customer);
+            console.log(sr);
+            console.log(`customer.subscription.updated for ${retrievedEvent.data.object.customer}`)
+        } else {
+            return new Response(`Error while trying to set customer premium for ${retrievedEvent.data.object.customer}`, {status: 400});
+        }
     }
 
     if (retrievedEvent.type === "customer.subscription.deleted") {
         const supabaseClient = getSupabaseAdminClient();
-        const sr = await supabaseClient.from("UserData").update(
-            {
-                premium: false
-            }
-        ).eq("stripeCustomerId", retrievedEvent.data.object.customer);
+        const sr = await supabaseClient.from("UserData").update({premium: false})
+            .eq("stripeCustomerId", retrievedEvent.data.object.customer);
         console.log(sr);
         console.log(`customer.subscription.deleted for ${retrievedEvent.data.object.customer}`)
     }
