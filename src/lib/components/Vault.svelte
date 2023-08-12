@@ -298,13 +298,13 @@
                     </tbody>
                 </table>
             {:else if pazzView === 1}
-                <div class="grid grid-cols-3 gap-4 mt-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-4">
                     {#each filteredEntries as entry}
                         <div class="card w-full bg-base-100 shadow-xl">
                             <div class="card-body">
-                                <h2 class="card-title break-words">{entry.location}</h2>
-                                <p>{entry.user}</p>
-                                <div class="card-actions justify-end">
+                                <div class="sm:text-lg break-words">{entry.location}</div>
+                                <p class=" text-sm sm:text-base">{entry.user}</p>
+                                <div class="card-actions justify-end text-sm sm:text-base">
                                     <button class="btn btn-primary" on:click={() => showDecrypt(entry)}>Decrypt</button>
                                 </div>
                             </div>
