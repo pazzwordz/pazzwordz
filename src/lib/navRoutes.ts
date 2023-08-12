@@ -17,5 +17,5 @@ export const routes = {
         cookies: "/legal/cookies",
         imprint: "/legal/imprint"
     },
-    github: "https://github.com/BlackPhoenix134/pazzwordz"
+    github: "https://github.com/pazzwordz/pazzwordz"
 } as const;
