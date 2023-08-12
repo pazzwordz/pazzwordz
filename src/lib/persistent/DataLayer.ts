@@ -46,7 +46,7 @@ export class DataLayerCloud implements DataLayer {
     public async getVaultKeyHash(): Promise<string> {
         const response = await this.supabase.from("decrypted_VaultKey").select("decrypted_vaultKeyHash")
             .eq("id", this.userId)
-        return response.data![0].decrypted_vaultKeyHash
+        return response.data![0].decrypted_vaultKeyHash!
     }
 
     public async deleteEntry(id: string) {
