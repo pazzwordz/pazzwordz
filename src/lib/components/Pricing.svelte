@@ -2,7 +2,7 @@
     import Fa from "svelte-fa";
     import {faCircleCheck, faCircleXmark} from "@fortawesome/free-regular-svg-icons";
 
-    let features = ["AES-256 ", "PBKDF2 with SHA512", "Zero-Knowledge Encryption", "Open Source", "Unlimited Passwords", "Autofill Plugin", "Cloud Storage", "Unlimited Devices", "Password Sharing"]
+    let features = ["AES-256 ", "PBKDF2 with SHA512", "Zero-Knowledge Encryption", "Open Source", "Unlimited Passwords", "Cloud Storage", "Autofill Plugin", "Unlimited Devices", "Password Sharing"]
 
     let availableFeatures = 4;
 </script>
@@ -33,7 +33,8 @@
         </div>
     </div>
     <div class="lg:col-span-2 flex flex-col gap-4">
-        <div class="w-full bg-base-200 rounded-xl border-l-4 border-primary/20 hover:border-primary p-6 flex justify-between cursor-pointer" on:click={() => {availableFeatures = 4}}>
+        <div class="w-full bg-base-200 rounded-xl border-l-4 border-primary/20
+        hover:border-primary p-6 flex justify-between cursor-pointer" on:click={() => {availableFeatures = 4}}>
             <div class="w-3/5">
                 <h4 class="text-2xl font-bold mb-2 text-white">Local</h4>
                 <p class="">
@@ -44,7 +45,8 @@
                 <h4 class="text-4xl font-bold mb-2 text-white">Free</h4>
             </div>
         </div>
-        <div class="w-full bg-base-200 rounded-xl border-l-4 border-info/20 hover:border-info p-6 flex justify-between cursor-pointer" on:click={() => {availableFeatures = 6}}>
+        <div class="w-full bg-base-200 rounded-xl border-l-4 border-info/20
+         hover:border-info p-6 flex justify-between cursor-pointer" on:click={() => {availableFeatures = 5}}>
             <div class="w-3/5">
                 <h4 class="text-2xl font-bold mb-2 text-white">Cloud</h4>
                 <p class="">
@@ -55,7 +57,8 @@
                 <h4 class="text-4xl font-bold mb-2 text-white">Free</h4>
             </div>
         </div>
-        <div class="w-full bg-base-200 rounded-xl border-l-4 border-secondary/20 hover:border-secondary p-6 flex justify-between cursor-pointer" on:click={() => {availableFeatures = 8}}>
+        <div class="w-full bg-base-200 rounded-xl border-l-4 border-secondary/20
+        hover:border-secondary p-6 flex justify-between cursor-pointer" on:click={() => {availableFeatures = 8}}>
             <div class="w-3/5">
                 <h4 class="text-2xl font-bold mb-2 text-white">CloudPazz</h4>
                 <p class="">
