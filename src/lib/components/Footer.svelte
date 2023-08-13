@@ -21,12 +21,17 @@
         <a class="link link-hover" href={routes.generator}>Password Generator</a>
     </div>
     <div>
-        <span class="footer-title">Stay up to Date!</span>
-        <div class="form-control w-80">
-            <div class="relative">
-                <input type="text" placeholder="your@email.com" class="input input-bordered w-full pr-16"/>
-                <button class="btn btn-primary absolute top-0 right-0 rounded-l-none">Subscribe</button>
-            </div>
-        </div>
+        <span class="footer-title">Support us</span>
+        <a class="btn btn-primary" href="https://ko-fi.com/susdevs" target="_blank">
+            <img src="https://storage.ko-fi.com/cdn/brandasset/kofi_s_logo_nolabel.png" class="h-8 w-8"/>
+            Support us!
+        </a>
+        <!--        <span class="footer-title">Stay up to Date!</span>-->
+        <!--        <div class="form-control w-80">-->
+        <!--            <div class="relative">-->
+        <!--                <input type="text" placeholder="your@email.com" class="input input-bordered w-full pr-16"/>-->
+        <!--                <button class="btn btn-primary absolute top-0 right-0 rounded-l-none">Subscribe</button>-->
+        <!--            </div>-->
+        <!--        </div>-->
     </div>
 </footer>
