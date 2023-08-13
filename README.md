@@ -1,38 +1,29 @@
-# create-svelte
+# [pazzwordz.io](https://www.pazzwordz.io)
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte).
+This is an open-source password manager. Yesterday we needed to share a password but because we might
+be slightly autistic and have ADHD, we thought: "Why not just make a quick web-ui to do it?".
+In hindsight, it's like deciding to throw a dinner party but ending up constructing
+a five-star restaurant from scratch. Anyway, the password manager is now done,
+and you can use it for free at [pazzwordz.io](https://www.pazzwordz.io).
 
-## Creating a project
+## Feel free to contribute!
+So ... you have too much time and need something to do, or feel the urge to procrastinate instead of doing
+something important? Contribute to this project and in return get free access
+to the paid cloud tier forever!
+
+## Self-Hosting Pazzwordz
 
 If you're seeing this, you've probably already done this step. Congrats!
 
 ```bash
-# create a new project in the current directory
-npm create svelte@latest
-
-# create a new project in my-app
-npm create svelte@latest my-app
+#todo code to self host here
 ```
 
-## Developing
+## Support us
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+We're committed to keeping this project free and open-source for everyone to benefit from.
+If you find our project useful and would like to support its ongoing development and maintenance,
+we'd greatly appreciate your donation. Your contributions will help us cover server costs, add new
+features, and ensure the project's sustainability.
 
-```bash
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
-
-## Building
-
-To create a production version of your app:
-
-```bash
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/L4L6O5WMR)
