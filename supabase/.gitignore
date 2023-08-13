@@ -3,3 +3,4 @@
 .temp
 /config.toml
 /seed.sql
+/functions/sync-project-stats/account.json
