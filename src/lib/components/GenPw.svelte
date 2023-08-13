@@ -1,10 +1,14 @@
 <script lang="ts">
-    import {createEventDispatcher} from 'svelte';
+    import {createEventDispatcher, onMount} from 'svelte';
+    import {copyToClipboard} from "$lib/functions";
+    import {faCopy} from "@fortawesome/free-solid-svg-icons";
+    import Tooltip from "$lib/components/Tooltip.svelte";
+    import Fa from "svelte-fa";
 
     const dispatch = createEventDispatcher();
 
     let generatedPassword: string = "";
-    let length = 16
+    let length = 17
 
     async function generatePassword() {
         const buffer = new Uint8Array(length);
@@ -18,17 +22,26 @@
         generatedPassword = password;
         dispatch("changed", {password: generatedPassword})
     }
+
+    onMount(generatePassword);
+
 </script>
 
 <div class="flex flex-col gap-6 w-full h-full">
     <div class="w-full flex items-center justify-center">
         <div>{length}</div>
     </div>
-    <input type="range" min="8" max="26" class="range" bind:value={length}
-           on:change={() => generatePassword()}/>
+    <input type="range" min="8" max="26" class="range" bind:value={length} on:input={() => generatePassword()}/>
     <button class="btn btn-success" on:click={generatePassword}>Generate</button>
-    <div class="flex gap-2">
-        <div>Your Password:</div>
-        <div>{generatedPassword}</div>
+    <div class="flex flex-col items-center gap-2">
+        <div class="bg-base-100 text-md lg:text-xxl rounded-xl flex items-center gap-4 lg:py-8 pl-4 lg:pl-8 lg:pr-4">
+            <span>{generatedPassword}</span>
+            <Tooltip text="Copy" class="relative">
+                <button class="btn btn-ghost"
+                        on:click={() => copyToClipboard(generatedPassword)}>
+                    <Fa icon={faCopy} class="text-3xl"/>
+                </button>
+            </Tooltip>
+        </div>
     </div>
 </div>

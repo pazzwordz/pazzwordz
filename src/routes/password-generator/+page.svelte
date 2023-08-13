@@ -39,7 +39,7 @@
     </div>
     <input type="range" min="8" max="26" class="range" bind:value={length} on:input={() => generatePassword()}/>
     <div class="flex flex-col items-center gap-2">
-        <div class="bg-base-100 text-md lg:text-5xl  rounded-xl flex items-center gap-4 lg:py-8 pl-4 lg:pl-8 lg:pr-4">
+        <div class="bg-base-100 text-md lg:text-5xl rounded-xl flex items-center gap-4 lg:py-8 pl-4 lg:pl-8 lg:pr-4">
             <span>{generatedPassword}</span>
             <Tooltip text="Copy" class="relative">
                 <button class="btn btn-ghost"
