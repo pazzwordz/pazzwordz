@@ -17,6 +17,10 @@
         <a class="link link-hover" href={routes.legal.imprint}>Imprint</a>
     </div>
     <div>
+        <span class="footer-title">Pages</span>
+        <a class="link link-hover" href={routes.generator}>Password Generator</a>
+    </div>
+    <div>
         <span class="footer-title">Stay up to Date!</span>
         <div class="form-control w-80">
             <div class="relative">

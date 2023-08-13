@@ -18,5 +18,6 @@ export const routes = {
         cookies: "/legal/cookies",
         imprint: "/legal/imprint"
     },
+    generator: "/password-generator",
     github: "https://github.com/pazzwordz/pazzwordz"
 } as const;

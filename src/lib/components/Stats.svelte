@@ -29,7 +29,7 @@
 </script>
 
 <div class="flex flex-col lg:flex-row gap-4 justify-between my-16">
-    <div class="stats bg-base-200 shadow stats-vertical lg:stats-horizontal">
+    <div class="stats bg-base-200 shadow stats-vertical h-max lg:stats-horizontal">
         <div class="stat">
             <div class="stat-figure text-primary">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block w-12 h-12 fill-current mt-6">

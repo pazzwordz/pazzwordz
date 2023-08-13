@@ -8,7 +8,7 @@
     <div class="hero-overlay bg-base-300 bg-opacity-80"></div>
     <div class="hero-content text-center max-w-[90vw] flex-col lg:flex-row">
         <div class="flex flex-col justify-center">
-            <h1 class="text-3xl lg:text-5xl  font-bold uppercase my-4">Simplicity is Security</h1>
+            <h1 class="text-3xl lg:text-5xl font-bold uppercase my-8">Simplicity is Security</h1>
             <h2 class="text-md lg:text-lg font-medium lg:mt-4">Introducing Pazzwordz: an Open-Source Password Manager!</h2>
             <span class="text-sm mt-2">Version 1.0, {date}</span>
         </div>
@@ -22,6 +22,6 @@
 
 <style>
     .vignette {
-        box-shadow: 0 0 800px rgba(0,0,0,0.9) inset
+        box-shadow: 0 0 20vw rgba(0,0,0,0.9) inset
     }
 </style>
