@@ -43,4 +43,4 @@ getEndpoints(tree, baseRoute);
 
 const sitemap = getSitemapXML("https://www.pazzwordz.io", routes)
 
-fs.writeFileSync('vercel/output/static/sitemap.xml', sitemap);
+fs.writeFileSync('/vercel/output/static/sitemap.xml', sitemap);
