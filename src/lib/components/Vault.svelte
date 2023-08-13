@@ -172,11 +172,6 @@
             <input class="input input-bordered w-64" placeholder="User" bind:value={addPazzUser}/>
             <div class="relative">
                 <input class="input input-bordered w-64" placeholder="Password" bind:value={addPazzPass}/>
-                <!--                <div class="tooltip absolute right-2 top-[50%] translate-y-[-50%]" data-tip="Generate Password">-->
-                <!--                    <button type="button" class="btn btn-outline btn-xs border-none" on:click={generateNewPassword}>-->
-                <!--                        <Fa icon={faKey} class="stroke-current"  />-->
-                <!--                    </button>-->
-                <!--                </div>-->
                 <Tooltip text="Generate Password" class="absolute right-2 top-[50%] translate-y-[-50%]">
                     <button type="button" class="btn btn-outline btn-xs border-none" on:click={generateNewPassword}>
                         <Fa icon={faKey} class="stroke-current"/>
@@ -229,7 +224,7 @@
                 <table class="table table-zebra table-fixed mt-4">
                     <thead>
                     <tr>
-                        <td>location</td>
+                        <td>Location</td>
                         <td>User</td>
                         <td>Password</td>
                         <td></td>
@@ -238,14 +233,14 @@
                     <tbody>
                     {#each filteredEntries as entry}
                         <tr>
-                            <td>
+                            <td class="h-[4rem]">
                                 {#if isValidHttpUrl(entry.location)}
-                                    <a class="break-words link link-hover" href="{entry.location}">{entry.location}</a>
+                                    <a class="break-words link link-hover line-clamp-2" href="{entry.location}" target="_blank">{entry.location}</a>
                                 {:else}
-                                    <div class="break-words">{entry.location}</div>
+                                    <div class="break-words line-clamp-2">{entry.location}</div>
                                 {/if}
                             </td>
-                            <td class="flex gap-2 items-center">
+                            <td class="h-[4rem] flex gap-2 items-center">
                                 <span>{entry.user}</span>
                                 <Tooltip text="Copy" class="relative">
                                     <button class="btn btn-xs btn-outline btn-square border-none"
@@ -254,18 +249,18 @@
                                     </button>
                                 </Tooltip>
                             </td>
-                            <td>
+                            <td class="h-[4rem]">
                                 {#if decryptedEntries.has(entry.id)}
                                     <div class="flex gap-2 items-center">
                                         <span class="break-words">{decryptedEntries.get(entry.id)}</span>
                                     </div>
                                 {:else }
-                                    <div class="flex gap-2">
-                                        <div class="break-words">********</div>
+                                    <div class="flex gap-2 items-center">
+                                        <div>••••••••••••••••</div>
                                     </div>
                                 {/if}
                             </td>
-                            <td>
+                            <td class="h-[4rem]">
                                 {#if decryptedEntries.has(entry.id)}
                                     <Tooltip text="Decrypt">
                                         <button class="btn btn-xs btn-outline btn-square border-none"
