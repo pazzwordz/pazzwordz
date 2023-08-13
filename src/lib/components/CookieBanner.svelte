@@ -27,6 +27,10 @@
 
     function acceptCookies() {
         setCookie('cookieConsent', "true", 365);
+        gtag('consent', 'update', {
+            'ad_storage': 'granted',
+            'analytics_storage': 'granted'
+        });
         cookiesAccepted = true;
     }
 

@@ -21,8 +21,13 @@
                 page_title: document.title,
                 page_path: $page.url.pathname,
             });
+            gtag('consent', 'default', {
+                'ad_storage': 'denied',
+                'analytics_storage': 'denied'
+            });
         }
     }
+
 
     onMount(() => {
         const {
