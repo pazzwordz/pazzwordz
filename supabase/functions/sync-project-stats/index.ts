@@ -35,7 +35,7 @@ async function getAnalData(accessToken: string) {
         ],
         "dateRanges": [
             {
-                "startDate": "30daysAgo",
+                "startDate": "2023-01-01",
                 "endDate": "today"
             }
         ],
