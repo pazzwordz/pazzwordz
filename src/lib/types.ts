@@ -7,3 +7,5 @@ export type UpdateDto<T extends keyof Database['public']['Tables']> = Database['
 
 export type PasswordEntry = Row<"PasswordEntry">
 export type PasswordEntryView = Omit<PasswordEntry, "encryptedPassword" | "userId">
+
+export type ProjectStats = Row<"ProjectStats">

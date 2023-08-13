@@ -1,5 +1,31 @@
-<script>
+<script lang="ts">
     import {routes} from "$lib/navRoutes";
+    import type {ProjectStats} from "$lib/types.js";
+
+    function formatNumber(num: number): string {
+        if (num < 1000) {
+            return num.toString(); // No formatting needed for numbers less than 1000
+        } else if (num < 10000) {
+            const roundedNum = Math.round(num / 100) / 10; // Round to 1 decimal place
+            return `${roundedNum}k`;
+        } else if (num < 1000000) {
+            const roundedNum = Math.round(num / 1000);
+            return `${roundedNum}k`;
+        } else if (num < 10000000) {
+            const roundedNum = Math.round(num / 100000) / 10; // Round to 1 decimal place
+            return `${roundedNum}M`;
+        } else {
+            const millions = Math.floor(num / 1000000);
+            const remainder = Math.round((num % 1000000) / 100000);
+            if (remainder === 10) {
+                return `${millions + 1}M`;
+            } else {
+                return `${millions}.${remainder}M`;
+            }
+        }
+    }
+
+    export let stats: ProjectStats;
 </script>
 
 <div class="flex flex-col lg:flex-row gap-4 justify-between my-16">
@@ -11,8 +37,8 @@
                 </svg>
             </div>
             <div class="stat-title">Github Stars</div>
-            <div class="stat-value text-primary">2</div>
-            <div class="stat-desc">100% more than last month</div>
+            <div class="stat-value text-primary">{stats.gitStars}</div>
+            <div class="stat-desc"></div>
         </div>
 
         <div class="stat">
@@ -22,8 +48,8 @@
                 </svg>
             </div>
             <div class="stat-title">Page Views</div>
-            <div class="stat-value text-primary">2.5K</div>
-            <div class="stat-desc">100% more than last month</div>
+            <div class="stat-value text-primary">{formatNumber(stats.pageViews)}</div>
+            <div class="stat-desc"></div>
         </div>
 
         <div class="stat">
@@ -36,8 +62,8 @@
                 </svg>
             </div>
             <div class="stat-title">Total Users</div>
-            <div class="stat-value text-secondary">15</div>
-            <div class="stat-desc">21% more than last month</div>
+            <div class="stat-value text-secondary">{stats.totalUsers}</div>
+            <div class="stat-desc"></div>
         </div>
 
         <div class="stat">
@@ -48,8 +74,8 @@
                 </svg>
             </div>
             <div class="stat-title">Passwords Managed</div>
-            <div class="stat-value text-secondary">348</div>
-            <div class="stat-desc">21% more than last month</div>
+            <div class="stat-value text-secondary">{stats.managedPasswords}</div>
+            <div class="stat-desc"></div>
         </div>
 
         <div class="stat">
