@@ -7,11 +7,22 @@
     import FingerprintJS from "$lib/scripts/fp.js";
     import {fingerprintStore} from "$lib/stores";
     import {DataLayerLocal} from "$lib/persistent/DataLayer";
+    import CookieBanner from "$lib/components/CookieBanner.svelte";
+    import {page} from "$app/stores";
 
     export let data
 
     let {supabase, session} = data
     $: ({supabase, session} = data)
+
+    $: {
+        if (typeof gtag !== "undefined") {
+            gtag("config", "G-6L1QCX68VN", {
+                page_title: document.title,
+                page_path: $page.url.pathname,
+            });
+        }
+    }
 
     onMount(() => {
         const {
@@ -36,6 +47,7 @@
 
 <div class="relative px-[5vw] lg:px-[10vw] bg-base-300">
     <Navbar {supabase} {session}/>
+    <CookieBanner/>
     <div class="h-12"/>
     <main class="min-h-screen">
         <slot/>
