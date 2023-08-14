@@ -6,14 +6,14 @@
     import {decryptHex, deriveKey, encryptText} from "$lib/crypto";
 
     export let data;
-    let pazz = "";
+    let pazz = "••••••••••••••••";
 
     function parse(text: string): Uint8Array | null {
         const obj = JSON.parse(text);
         if (obj == null)
             return null;
         return new Uint8Array(obj);
-    };
+    }
 
     function decryptPassword() {
         pazz = decryptHex(data.encrypted, parse(atob(data.key))!);
