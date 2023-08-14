@@ -1,5 +1,4 @@
-export const load = async ({url}: any) => {
-
+export const load = async ({url, parent}: any) => {
     const id = url.searchParams.get('id');
     const key = url.searchParams.get('key');
 
