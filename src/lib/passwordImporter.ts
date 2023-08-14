@@ -42,11 +42,13 @@ export function importFromCsv(content: string) {
 
     for (const row of csvRows) {
         const columns: string[] = row.split(delimiter);
-        data.push({
+        const entry = {
             location: columns[rowIndices[0]],
             user: columns[rowIndices[1]],
             password: columns[rowIndices[2]]
-        });
+        }
+        if(entry.location && entry.user && entry.password)
+            data.push(entry);
     }
     return data;
 }
@@ -56,7 +58,7 @@ export function exportToCsv(data: Array<ImportedPassword>) {
     let counter = 0;
     for(const row of data) {
         str += [row.location, row.user, row.password].join(",")
-        if(counter < data.length)
+        if(counter < data.length - 1)
             str += "\n";
         counter++;
     }

@@ -6,7 +6,7 @@
     import {routes} from "$lib/navRoutes";
     import type {DataLayer} from "$lib/persistent/DataLayer";
     import {copyToClipboard, isValidHttpUrl} from "$lib/functions";
-    import {faCopy, faEye, faEyeSlash, faKey, faTrash} from "@fortawesome/free-solid-svg-icons";
+    import {faCopy, faEye, faEyeSlash, faKey, faShare, faTrash} from "@fortawesome/free-solid-svg-icons";
     import Fa from "svelte-fa"
     import {DataLayerCloud, DataLayerLocal} from "$lib/persistent/DataLayer";
     import type {Database} from "$lib/database.types";
@@ -19,6 +19,7 @@
     import type {ImportedPassword} from "$lib/passwordImporter";
     import ImportReportModal from "$lib/components/ImportReportModal.svelte";
     import {exportToCsv} from "$lib/passwordImporter";
+    import SharePwModal from "$lib/components/SharePwModal.svelte";
 
 
     let decryptedEntries = new Map<string, string>();
@@ -30,6 +31,7 @@
     let genPwModal: GenPwModal;
     let importPwsModal: ImportPwsModal;
     let importReportModal: ImportReportModal;
+    let sharePwModal: SharePwModal;
 
     let dataLayer: DataLayer;
 
@@ -112,12 +114,13 @@
         }
         const content = exportToCsv(exportEntries);
         const contentBuffer = (new TextEncoder()).encode(content);
-        const blob = new Blob([contentBuffer], { type: 'application/octet-stream' });
+        const blob = new Blob([contentBuffer], {type: 'application/octet-stream'});
         const link = document.createElement('a');
         link.href = window.URL.createObjectURL(blob);
         link.download = 'pazzwordz.pazz';
         link.click();
     }
+
     async function hideDecrypt(entry: PasswordEntryView) {
         decryptedEntries.delete(entry.id)
         decryptedEntries = decryptedEntries
@@ -167,21 +170,31 @@
     async function onPasswordsImport(importedEntries: Array<ImportedPassword>) {
         let duplicates = new Array<PasswordEntryView>();
         const toAdd = new Array<ImportedPassword>();
-        for(const importedEntry of importedEntries) {
+        for (const importedEntry of importedEntries) {
             const foundEntry = entries.find((entry: PasswordEntryView) =>
                 entry.location == importedEntry.location
-            && entry.user == entry.user);
-            if(foundEntry) {
+                && entry.user == entry.user);
+            console.log(importedEntry)
+            if (foundEntry) {
+                console.log("found")
                 duplicates.push(foundEntry)
             } else {
+                console.log("add")
                 toAdd.push(importedEntry);
             }
         }
+        if (toAdd.length > 0) {
+            const added = await dataLayer.createPasswordEntries($usedVaultKeyStore!, toAdd)
+            entries = entries.concat(added);
+        }
 
-        const added = await dataLayer.createPasswordEntries($usedVaultKeyStore!, toAdd)
-        entries = entries.concat(added);
-        if(duplicates.length > 0)
+        if (duplicates.length > 0)
             importReportModal.show(duplicates)
+    }
+
+    async function onSharePassword(entry: PasswordEntryView) {
+        const playinTextYö = await decryptPasswordOnly(entry);
+        sharePwModal.show(playinTextYö)
     }
 
 </script>
@@ -190,6 +203,7 @@
 <GenPwModal bind:this={genPwModal}/>
 <ImportPwsModal bind:this={importPwsModal}/>
 <ImportReportModal bind:this={importReportModal}/>
+<SharePwModal bind:this={sharePwModal} supabase={supabase} userId={userId}/>
 <div class="w-full flex flex-col lg:flex-row gap-4 lg:p-8 h-[80vh]">
     <div class="lg:w-1/5 flex flex-col items-center gap-4">
         <a class="btn w-64 btn-outline flex gap-2 items-center" href={routes.cloud.cloud}>
@@ -273,7 +287,8 @@
                     <tr>
                         <td class="h-[4rem]">
                             {#if isValidHttpUrl(entry.location)}
-                                <a class="break-words link link-hover line-clamp-2" href="{entry.location}" target="_blank">{entry.location}</a>
+                                <a class="break-words link link-hover line-clamp-2" href="{entry.location}"
+                                   target="_blank">{entry.location}</a>
                             {:else}
                                 <div class="break-words line-clamp-2">{entry.location}</div>
                             {/if}
@@ -324,6 +339,12 @@
                                 <button class="btn btn-xs btn-outline btn-square border-none"
                                         on:click={() => deleteEntry(entry)}>
                                     <Fa icon={faTrash} class="stroke-current" color="#bf1313" size="lg"/>
+                                </button>
+                            </Tooltip>
+                            <Tooltip text="Share">
+                                <button class="btn btn-xs btn-outline btn-square border-none"
+                                        on:click={() => onSharePassword(entry)}>
+                                    <Fa icon={faShare} class="stroke-current" size="lg"/>
                                 </button>
                             </Tooltip>
                         </td>
