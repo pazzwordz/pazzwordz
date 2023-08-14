@@ -1,12 +1,13 @@
 import {redirect} from "@sveltejs/kit";
 import type {PageLoad} from "./$types";
 import {DataLayerCloud} from "$lib/persistent/DataLayer";
+import {routes} from "$lib/navRoutes";
 
 export const load: PageLoad = async ({parent}) => {
     const {session, supabase} = await parent();
 
     if (!session)
-        throw redirect(302, '/login')
+        throw redirect(302, routes.auth.login)
 
     return {
         session

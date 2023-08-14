@@ -92,6 +92,7 @@
         confirmModal.show(async () => {
             await dataLayer.deleteEntry(entry.id);
             await refreshEntries();
+            toast.push("Deleted Password", {theme: successToastTheme});
         }, undefined, {
             header: "Delete Password",
             description: `Are you sure you want to delete password "${entry.location}"`
@@ -157,6 +158,7 @@
         addPazzLocation = undefined;
         addPazzUser = undefined;
         addPazzPass = undefined;
+        toast.push("Added Password", {theme: successToastTheme});
     }
 
 

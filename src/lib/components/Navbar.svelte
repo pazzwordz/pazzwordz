@@ -4,12 +4,15 @@
     import {redirect} from "@sveltejs/kit";
     import {goto} from "$app/navigation";
     import {routes} from "$lib/navRoutes";
+    import {toast} from "@zerodevx/svelte-toast";
+    import {successToastTheme} from "$lib/config";
 
     export let supabase: SupabaseClient<Database>;
     export let session: Session | null;
 
     async function signOut() {
-        await supabase.auth.signOut()
+        await supabase.auth.signOut();
+        toast.push("Signed Out", {theme: successToastTheme})
         goto("/")
     }
 </script>

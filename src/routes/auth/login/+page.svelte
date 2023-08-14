@@ -4,6 +4,8 @@
     import {fingerprintStore} from "$lib/stores";
     import {routes} from "$lib/navRoutes";
     import {goto} from "$app/navigation";
+    import {toast} from "@zerodevx/svelte-toast";
+    import {successToastTheme} from "$lib/config";
 
     export let data: PageData;
 
@@ -35,6 +37,7 @@
             data: device_data
         })
 
+        toast.push("Signed In", {theme: successToastTheme});
 
         await goto(routes.cloud.cloud);
 
