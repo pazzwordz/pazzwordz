@@ -10,5 +10,7 @@
 </script>
 <svelte:head>
     <title>Pazzwordz | Local Vault</title>
+    <meta name="description" content="Use this free secure password storage to securely store passwords on your local device.">
+    <meta name="keywords" content="pazzwordz.io, data privacy, password manager, secure password, pazzwordz, local storage">
 </svelte:head>
 <Vault/>

@@ -27,6 +27,11 @@
 
 </script>
 
+<svelte:head>
+    <title>Pazzwordz | Password Generator</title>
+    <meta name="description" content="Generate a secure password in seconds with our password generator!">
+    <meta name="keywords" content="pazzwordz.io, password manager, password generator, secure password, pazzwordz">
+</svelte:head>
 
 <h2 class="text-5xl font-bold text-center mt-8 mb-20 w-full">Generate a secure Password</h2>
 

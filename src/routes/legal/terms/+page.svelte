@@ -1,5 +1,7 @@
 <svelte:head>
     <title>Pazzwordz | Terms of Service</title>
+    <meta name="description" content="Learn about the terms of service on pazzwordz.io and how we manage user data.">
+    <meta name="keywords" content="pazzwordz.io, terms of service,terms,  data privacy, user information">
 </svelte:head>
 <div class="max-w-[50vw] text-justify leading-loose">
     <h1 class="text-4xl font-bold my-4">Terms of Service</h1>
