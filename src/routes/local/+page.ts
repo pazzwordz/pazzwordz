@@ -6,8 +6,6 @@ import {routes} from "$lib/navRoutes";
 export const load: PageLoad = async ({parent}) => {
     const {session, supabase} = await parent();
 
-    console.log(await parent())
-
     let hasPremium = false;
     if (session) {
         const response = await supabase.from("UserData").select('*')

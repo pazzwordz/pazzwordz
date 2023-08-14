@@ -20,7 +20,7 @@
     import ImportReportModal from "$lib/components/ImportReportModal.svelte";
     import {exportToCsv} from "$lib/passwordImporter";
     import SharePwModal from "$lib/components/SharePwModal.svelte";
-    import {successToastTheme} from "$lib/config";
+    import {errorToastTheme, successToastTheme} from "$lib/config";
     import {toast} from "@zerodevx/svelte-toast";
     import {data} from "autoprefixer";
 
@@ -144,7 +144,7 @@
             const otp = dataLayer.generateOtpKey();
             setKeyFunction(vaultKeyInput!, otp)
         } else {
-            console.log("wrong vault key")
+            toast.push("Wrong Vault Key!", {theme: errorToastTheme});
         }
         vaultKeyInput = undefined;
     }
@@ -182,10 +182,8 @@
                 entry.location == importedEntry.location
                 && entry.user == entry.user);
             if (foundEntry) {
-                console.log("found")
                 duplicates.push(foundEntry)
             } else {
-                console.log("add")
                 toAdd.push(importedEntry);
             }
         }
