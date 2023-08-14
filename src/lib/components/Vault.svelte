@@ -171,15 +171,20 @@
             const foundEntry = entries.find((entry: PasswordEntryView) =>
                 entry.location == importedEntry.location
             && entry.user == entry.user);
+            console.log(importedEntry)
             if(foundEntry) {
+                console.log("found")
                 duplicates.push(foundEntry)
             } else {
+                console.log("add")
                 toAdd.push(importedEntry);
             }
         }
+        if(toAdd.length > 0) {
+            const added = await dataLayer.createPasswordEntries($usedVaultKeyStore!, toAdd)
+            entries = entries.concat(added);
+        }
 
-        const added = await dataLayer.createPasswordEntries($usedVaultKeyStore!, toAdd)
-        entries = entries.concat(added);
         if(duplicates.length > 0)
             importReportModal.show(duplicates)
     }
