@@ -3,10 +3,10 @@
     import type {Database} from "$lib/database.types";
     import {v4 as uuidv4} from "uuid";
     import type {DataLayer} from "$lib/persistent/DataLayer";
-    import {deriveKey, encryptText} from "$lib/crypto";
+    import {deriveKey, encryptText} from "$lib/scripts/crypto";
     import Fa from "svelte-fa";
     import {faClipboard, faKey, faShare} from "@fortawesome/free-solid-svg-icons";
-    import {copyToClipboard} from "$lib/functions";
+    import {copyToClipboard} from "$lib/scripts/functions";
     import Tooltip from "$lib/components/Tooltip.svelte";
 
     let isModalOpen = false

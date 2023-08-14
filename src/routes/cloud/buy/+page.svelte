@@ -1,7 +1,7 @@
 <script lang="ts">
     import {faCircleCheck} from "@fortawesome/free-regular-svg-icons";
     import Fa from "svelte-fa";
-    import {routes} from "$lib/navRoutes";
+    import {routes} from "$lib/config";
     import type {PageData} from "./$types";
 
     export let data: PageData;

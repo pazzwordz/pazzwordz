@@ -1,5 +1,5 @@
 <script>
-    import {routes} from "$lib/navRoutes";
+    import {routes} from "$lib/config";
     import Fa from "svelte-fa";
     import {faCloud, faComputer, faServer} from "@fortawesome/free-solid-svg-icons";
 </script>

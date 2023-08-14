@@ -1,7 +1,7 @@
 <script lang="ts">
     import Hero from "$lib/components/Hero.svelte";
     import Stats from "$lib/components/Stats.svelte";
-    import {routes} from "$lib/navRoutes";
+    import {routes} from "$lib/config";
     import Features from "$lib/components/Features.svelte";
     import Pricing from "$lib/components/Pricing.svelte";
 

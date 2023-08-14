@@ -1,11 +1,11 @@
 <script lang="ts">
-    import {copyToClipboard} from "$lib/functions";
+    import {copyToClipboard} from "$lib/scripts/functions";
     import {faCopy} from "@fortawesome/free-solid-svg-icons";
     import Tooltip from "$lib/components/Tooltip.svelte";
     import Fa from "svelte-fa";
-    import {decryptHex, deriveKey, encryptText} from "$lib/crypto";
+    import {decryptHex, deriveKey, encryptText} from "$lib/scripts/crypto";
     import {goto} from "$app/navigation";
-    import {routes} from "$lib/navRoutes";
+    import {routes} from "$lib/config";
 
     export let data;
     let passwordText: string | undefined = undefined;

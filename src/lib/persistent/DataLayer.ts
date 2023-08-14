@@ -1,7 +1,7 @@
 import type {PasswordEntryView} from "$lib/types";
 import type {SupabaseClient} from "@supabase/supabase-js";
 import type {Database} from "$lib/database.types";
-import {deriveKey, encryptText, sha256HashHex} from "$lib/crypto";
+import {deriveKey, encryptText, sha256HashHex} from "$lib/scripts/crypto";
 import {error} from "@sveltejs/kit";
 import {v4 as uuidv4, v4 as uuid4} from "uuid"
 

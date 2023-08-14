@@ -1,6 +1,6 @@
 <script lang="ts">
     import {createEventDispatcher, onMount} from 'svelte';
-    import {copyToClipboard} from "$lib/functions";
+    import {copyToClipboard} from "$lib/scripts/functions";
     import {faCopy} from "@fortawesome/free-solid-svg-icons";
     import Tooltip from "$lib/components/Tooltip.svelte";
     import Fa from "svelte-fa";

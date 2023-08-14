@@ -1,6 +1,6 @@
 <script lang="ts">
     import type {PageData} from "./$types";
-    import {routes} from "$lib/navRoutes";
+    import {routes} from "$lib/config";
     import type {Row} from "$lib/types";
     import {onMount} from "svelte";
 

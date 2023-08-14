@@ -1,6 +1,6 @@
 import {derived, writable} from "svelte/store";
-import {persisted} from "$lib/persisted";
-import {decryptHex, encryptText} from "$lib/crypto";
+import {persisted} from "$lib/scripts/persisted";
+import {decryptHex, encryptText} from "$lib/scripts/crypto";
 import type {DataLayerLocal} from "$lib/persistent/DataLayer";
 
 interface Serializer<T> {

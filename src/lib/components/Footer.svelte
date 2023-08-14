@@ -1,5 +1,5 @@
 <script>
-    import {routes} from "$lib/navRoutes";
+    import {routes} from "$lib/config";
 </script>
 
 <footer class="footer p-10 bg-base-200 text-base-content px-[5vw] lg:px-[10vw]">

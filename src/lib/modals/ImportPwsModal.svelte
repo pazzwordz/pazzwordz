@@ -1,8 +1,8 @@
 <script lang="ts">
     import GenPw from "$lib/components/GenPw.svelte";
     import {onMount} from "svelte";
-    import {type ImportedPassword, importFromCsv} from "$lib/passwordImporter";
-    import {decryptHex, deriveKey, encryptText} from "$lib/crypto";
+    import {type ImportedPassword, importFromCsv} from "$lib/scripts/passwordImporter";
+    import {decryptHex, deriveKey, encryptText} from "$lib/scripts/crypto";
 
 
     let isModalOpen = false

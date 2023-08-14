@@ -1,5 +1,5 @@
 <script lang="ts">
-    import {routes} from "$lib/navRoutes";
+    import {routes} from "$lib/config";
     import type {ProjectStats} from "$lib/types.js";
 
     function formatNumber(num: number): string {

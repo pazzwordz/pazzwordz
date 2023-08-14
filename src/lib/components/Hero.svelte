@@ -1,5 +1,5 @@
 <script lang="ts">
-    import {routes} from "$lib/navRoutes";
+    import {routes} from "$lib/config";
 
     let date = "11 Aug. 2023";
 </script>

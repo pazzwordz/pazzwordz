@@ -1,7 +1,7 @@
 <script lang="ts">
     import {get} from "svelte/store";
     import {fingerprintStore} from "$lib/stores";
-    import {routes} from "$lib/navRoutes";
+    import {routes} from "$lib/config";
     import {goto} from "$app/navigation";
 
     export let data;

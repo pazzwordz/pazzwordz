@@ -3,7 +3,7 @@
     import type {Database} from "$lib/database.types";
     import {goto} from "$app/navigation";
     import {createHash} from "sha256-uint8array";
-    import {routes} from "$lib/navRoutes";
+    import {routes} from "$lib/config";
 
     export let data: PageData;
 

@@ -2,7 +2,7 @@
     import {get} from "svelte/store";
     import type {PageData} from "../../../../.svelte-kit/types/src/routes";
     import {fingerprintStore} from "$lib/stores";
-    import {routes} from "$lib/navRoutes";
+    import {routes} from "$lib/config";
     import {goto} from "$app/navigation";
     import {toast} from "@zerodevx/svelte-toast";
     import {successToastTheme} from "$lib/config";

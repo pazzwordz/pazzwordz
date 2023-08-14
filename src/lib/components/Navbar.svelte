@@ -3,7 +3,7 @@
     import type {Database} from "$lib/database.types";
     import {redirect} from "@sveltejs/kit";
     import {goto} from "$app/navigation";
-    import {routes} from "$lib/navRoutes";
+    import {routes} from "$lib/config";
     import {toast} from "@zerodevx/svelte-toast";
     import {successToastTheme} from "$lib/config";
 

@@ -1,7 +1,7 @@
 <script lang="ts">
     import type {PageData} from "./$types";
 
-    import {routes} from "$lib/navRoutes";
+    import {routes} from "$lib/config";
 
     export let data: PageData;
 
