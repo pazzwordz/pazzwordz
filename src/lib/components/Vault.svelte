@@ -11,15 +11,15 @@
     import {DataLayerCloud, DataLayerLocal} from "$lib/persistent/DataLayer";
     import type {Database} from "$lib/database.types";
     import type {SupabaseClient} from "@supabase/supabase-js";
-    import ConfirmModal from "$lib/components/ConfirmModal.svelte";
-    import GenPwModal from "$lib/components/GenPwModal.svelte";
+    import ConfirmModal from "$lib/components/modals/ConfirmModal.svelte";
+    import GenPwModal from "$lib/components/modals/GenPwModal.svelte";
     import Tooltip from "$lib/components/Tooltip.svelte";
     import FuzzySearch from 'fuzzy-search'
-    import ImportPwsModal from "$lib/components/ImportPwsModal.svelte";
+    import ImportPwsModal from "$lib/components/modals/ImportPwsModal.svelte";
     import type {ImportedPassword} from "$lib/passwordImporter";
-    import ImportReportModal from "$lib/components/ImportReportModal.svelte";
+    import ImportReportModal from "$lib/components/modals/ImportReportModal.svelte";
     import {exportToCsv} from "$lib/passwordImporter";
-    import SharePwModal from "$lib/components/SharePwModal.svelte";
+    import SharePwModal from "$lib/components/modals/SharePwModal.svelte";
     import {errorToastTheme, successToastTheme} from "$lib/config";
     import {toast} from "@zerodevx/svelte-toast";
     import {data} from "autoprefixer";
