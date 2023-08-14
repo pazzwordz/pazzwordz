@@ -22,6 +22,10 @@
     }
 
     async function updatePassword() {
+        if (password !== password2) {
+            errorMessage = "Passwords dont match!";
+            return;
+        }
         const response = await data.supabase.auth.updateUser({password: password});
         if (response.error) {
             errorMessage = response.error.message;

@@ -68,5 +68,14 @@
                 </div>
             </div>
         </div>
+        <div class="card w-80 lg:w-96 bg-base-100 shadow-xl">
+            <div class="card-body">
+                <h2 class="card-title">Your Account</h2>
+                <p>Manage your account settings.</p>
+                <div class="card-actions justify-end">
+                    <a class="btn" href={routes.auth.resetPassword}>Change Password</a>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
