@@ -19,6 +19,8 @@ export const load = async ({url}: any) => {
     if (!sharedPassword.data)
         throw error(500, "Not Found!")
 
+    await supabaseAdminClient.from("SharedPasswords").delete().eq("id", id)
+
     const encryptedPass = sharedPassword.data!.encrypted;
 
     return {
