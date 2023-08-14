@@ -12,4 +12,4 @@
 <svelte:head>
     <title>Pazzwordz | Vault</title>
 </svelte:head>
-<Vault supabase={data.supabase} userId={getUserId()}/>
+<Vault supabase={data.supabase} userId={getUserId()} hasPremium={data.hasPremium} isCloud={true}/>

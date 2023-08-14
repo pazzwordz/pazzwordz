@@ -22,12 +22,15 @@
     import SharePwModal from "$lib/components/SharePwModal.svelte";
     import {successToastTheme} from "$lib/config";
     import {toast} from "@zerodevx/svelte-toast";
+    import {data} from "autoprefixer";
 
 
     let decryptedEntries = new Map<string, string>();
 
-    export let supabase: SupabaseClient<Database> | undefined = undefined;
+    export let supabase: SupabaseClient<Database>;
     export let userId: string | undefined = undefined
+    export let hasPremium: boolean;
+    export let isCloud: boolean;
 
     let confirmModal: ConfirmModal;
     let genPwModal: GenPwModal;
@@ -41,7 +44,7 @@
     let setKeyFunction: Function;
 
     $: {
-        if (supabase) {
+        if (isCloud) {
             usedVaultKeyStore = vaultKeyStoreCloud;
             setKeyFunction = setVaultKeyCloud
         } else {
@@ -69,12 +72,11 @@
 
 
     onMount(async () => {
-        if (supabase) {
+        if (isCloud) {
             dataLayer = new DataLayerCloud(supabase, userId!)
         } else {
             dataLayer = new DataLayerLocal();
         }
-
         refreshEntries();
     })
 
@@ -128,10 +130,6 @@
     async function hideDecrypt(entry: PasswordEntryView) {
         decryptedEntries.delete(entry.id)
         decryptedEntries = decryptedEntries
-    }
-
-    function isCloudVault() {
-        return dataLayer instanceof DataLayerCloud;
     }
 
     async function createVaultKey() {
@@ -213,7 +211,7 @@
 <GenPwModal bind:this={genPwModal}/>
 <ImportPwsModal bind:this={importPwsModal}/>
 <ImportReportModal bind:this={importReportModal}/>
-<SharePwModal bind:this={sharePwModal} supabase={supabase} userId={userId}/>
+<SharePwModal bind:this={sharePwModal} supabase={supabase} userId={userId+""}/>
 
 <div class="w-full flex flex-col lg:flex-row gap-4 lg:p-8 h-[80vh]">
     <div class="lg:w-1/5 flex flex-col items-center gap-4">
@@ -346,12 +344,18 @@
                                     <Fa icon={faCopy} class="stroke-current" size="lg"/>
                                 </button>
                             </Tooltip>
-                            {#if isCloudVault()}
+                            {#if hasPremium}
                                 <Tooltip text="Share">
                                     <button class="btn btn-xs btn-outline btn-square border-none"
                                             on:click={() => onSharePassword(entry)}>
                                         <Fa icon={faShare} class="stroke-current" size="lg"/>
                                     </button>
+                                </Tooltip>
+                            {:else }
+                                <Tooltip text="Share">
+                                    <a class="btn btn-xs btn-outline btn-square border-none" href={routes.cloud.buy}>
+                                        <Fa icon={faShare} class="stroke-current" size="lg"/>
+                                    </a>
                                 </Tooltip>
                             {/if}
                             <Tooltip text="Delete">
