@@ -1,7 +1,7 @@
 <script lang="ts">
     import type {PasswordEntry, PasswordEntryView} from "$lib/types";
     import {setVaultKeyCloud, setVaultKeyLocal, vaultKeyStoreCloud, vaultKeyStoreLocal} from "$lib/stores";
-    import {decryptHex, sha256HashHex} from "$lib/crypto";
+    import {decryptHex, deriveKey, encryptText, sha256HashHex} from "$lib/crypto";
     import {onMount} from "svelte";
     import {routes} from "$lib/navRoutes";
     import type {DataLayer} from "$lib/persistent/DataLayer";
@@ -112,11 +112,12 @@
                 password: await decryptPasswordOnly(entry)
             })
         }
-        const content = exportToCsv(exportEntries);
+        let content = exportToCsv(exportEntries);
+        content = encryptText(content, deriveKey("supersecretkey", "supersecretsalt"))
         const contentBuffer = (new TextEncoder()).encode(content);
         const blob = new Blob([contentBuffer], {type: 'application/octet-stream'});
         const link = document.createElement('a');
-        link.href = window.URL.createObjectURL(blob);
+        link.href = URL.createObjectURL(blob);
         link.download = 'pazzwordz.pazz';
         link.click();
     }

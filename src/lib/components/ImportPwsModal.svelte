@@ -2,6 +2,7 @@
     import GenPw from "$lib/components/GenPw.svelte";
     import {onMount} from "svelte";
     import {type ImportedPassword, importFromCsv} from "$lib/passwordImporter";
+    import {decryptHex, deriveKey, encryptText} from "$lib/crypto";
 
 
     let isModalOpen = false
@@ -22,7 +23,8 @@
         if(file.name.endsWith(".pazz")) {
             const textDecoder = new TextDecoder('utf-8');
             const buffer = await file.arrayBuffer();
-            content = textDecoder.decode(buffer);
+            const contentEncrypted = textDecoder.decode(buffer);
+            content = decryptHex(contentEncrypted, deriveKey("supersecretkey", "supersecretsalt"))
         } else {
             content =  await file!.text()
         }
