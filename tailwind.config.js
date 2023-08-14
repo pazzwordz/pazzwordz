@@ -2,7 +2,7 @@
 export default {
     content: ['./src/**/*.{html,js,svelte,ts}'],
     theme: {},
-    plugins: [require("daisyui")],
+    plugins: [require("daisyui"), require('@tailwindcss/line-clamp')],
     daisyui: {
         themes: ["halloween"], // true: all themes | false: only light + dark | array: specific themes like this ["light", "dark", "cupcake"]
         darkTheme: "halloween", // name of one of the included themes for dark mode
