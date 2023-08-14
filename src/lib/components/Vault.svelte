@@ -126,6 +126,10 @@
         decryptedEntries = decryptedEntries
     }
 
+    function isCloudVault() {
+        return dataLayer instanceof DataLayerCloud;
+    }
+
     async function createVaultKey() {
         const hash = sha256HashHex(vaultKeyInput!);
         await dataLayer.setVaultKeyHash(hash);
@@ -203,7 +207,9 @@
 <GenPwModal bind:this={genPwModal}/>
 <ImportPwsModal bind:this={importPwsModal}/>
 <ImportReportModal bind:this={importReportModal}/>
-<SharePwModal bind:this={sharePwModal} supabase={supabase} userId={userId}/>
+{#if isCloudVault()}
+    <SharePwModal bind:this={sharePwModal} supabase={supabase} userId={userId}/>
+{/if}
 <div class="w-full flex flex-col lg:flex-row gap-4 lg:p-8 h-[80vh]">
     <div class="lg:w-1/5 flex flex-col items-center gap-4">
         <a class="btn w-64 btn-outline flex gap-2 items-center" href={routes.cloud.cloud}>
@@ -341,12 +347,14 @@
                                     <Fa icon={faTrash} class="stroke-current" color="#bf1313" size="lg"/>
                                 </button>
                             </Tooltip>
-                            <Tooltip text="Share">
-                                <button class="btn btn-xs btn-outline btn-square border-none"
-                                        on:click={() => onSharePassword(entry)}>
-                                    <Fa icon={faShare} class="stroke-current" size="lg"/>
-                                </button>
-                            </Tooltip>
+                            {#if isCloudVault()}
+                                <Tooltip text="Share">
+                                    <button class="btn btn-xs btn-outline btn-square border-none"
+                                            on:click={() => onSharePassword(entry)}>
+                                        <Fa icon={faShare} class="stroke-current" size="lg"/>
+                                    </button>
+                                </Tooltip>
+                            {/if}
                         </td>
                     </tr>
                 {/each}
