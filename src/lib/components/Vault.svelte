@@ -20,6 +20,8 @@
     import ImportReportModal from "$lib/components/ImportReportModal.svelte";
     import {exportToCsv} from "$lib/passwordImporter";
     import SharePwModal from "$lib/components/SharePwModal.svelte";
+    import {successToastTheme} from "$lib/config";
+    import {toast} from "@zerodevx/svelte-toast";
 
 
     let decryptedEntries = new Map<string, string>();
@@ -190,10 +192,12 @@
         if (toAdd.length > 0) {
             const added = await dataLayer.createPasswordEntries($usedVaultKeyStore!, toAdd)
             entries = entries.concat(added);
+            toast.push("Imported Passwords", {theme: successToastTheme})
         }
 
         if (duplicates.length > 0)
             importReportModal.show(duplicates)
+
     }
 
     async function onSharePassword(entry: PasswordEntryView) {

@@ -9,6 +9,7 @@
     import {DataLayerLocal} from "$lib/persistent/DataLayer";
     import CookieBanner from "$lib/components/CookieBanner.svelte";
     import {page} from "$app/stores";
+    import { SvelteToast } from '@zerodevx/svelte-toast'
 
     export let data
 
@@ -50,6 +51,7 @@
     });
 </script>
 
+<SvelteToast />
 <div class="relative px-[5vw] lg:px-[10vw] bg-base-300">
     <Navbar {supabase} {session}/>
     <CookieBanner/>

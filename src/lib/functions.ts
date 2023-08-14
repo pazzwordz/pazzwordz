@@ -1,4 +1,8 @@
-export function  copyToClipboard (str: string)  {
+import {toast} from "@zerodevx/svelte-toast";
+import {successToastTheme} from "$lib/config";
+
+export function copyToClipboard (str: string)  {
+    toast.push("Copied to clipboard", {theme: successToastTheme})
     const el = document.createElement("textarea");
     el.value = str;
     el.setAttribute("readonly", "");
