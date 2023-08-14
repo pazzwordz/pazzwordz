@@ -10,6 +10,9 @@ export interface DataLayer {
 
     createPasswordEntry(vaultKey: string, password: string, location: string, user: string): Promise<PasswordEntryView>
 
+    createPasswordEntries(vaultKey: string, data: Array<{ password: string, location: string, user: string }>)
+        : Promise<Array<PasswordEntryView>>;
+
     isValidVaultKeyHash(hash: string): Promise<boolean>
 
     getEncryptedText(id: string): Promise<string>
@@ -83,6 +86,24 @@ export class DataLayerCloud implements DataLayer {
         return result.data![0] as PasswordEntryView;
     }
 
+    public async createPasswordEntries(vaultKey: string,
+                                       data: Array<{ password: string, location: string, user: string }>)
+        : Promise<Array<PasswordEntryView>> {
+        const key = this.deriveSaltedKey(vaultKey)
+        const toAdd = []
+        for (const entry of data) {
+            toAdd.push({
+                location: entry.location,
+                user: entry.user,
+                encryptedPassword: encryptText(entry.password.normalize("NFKD"), key),
+                userId: this.userId
+            })
+        }
+        const result = await this.supabase.from("PasswordEntry")
+            .insert(toAdd).select("id, location, user")
+        return result.data! as Array<PasswordEntryView>;
+    }
+
     public async isValidVaultKeyHash(hash: string) {
         const realVaultKey = await this.getVaultKeyHash();
         return hash == realVaultKey;
@@ -151,6 +172,18 @@ export class DataLayerLocal implements DataLayer {
         this.data.passwords.push(newEntry);
         this.pushToStorage();
         return newEntry
+    }
+
+    public async createPasswordEntries(vaultKey: string,
+                                       data: Array<{ password: string, location: string, user: string }>)
+        : Promise<Array<PasswordEntryView>> {
+        const added = new Array<PasswordEntryView>();
+        for (const entry of data) {
+            const newEntry = await this.createPasswordEntry(vaultKey, entry.password,
+                entry.location, entry.user);
+            added.push(newEntry);
+        }
+        return Promise.resolve(added)
     }
 
     private getEntryIdx(id: string) {

@@ -23,7 +23,6 @@
         isModalOpen = false;
     }
 
-
     function onPwChanged(event: any) {
         const pw = event.detail.password
         generatedPassword = pw;

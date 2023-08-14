@@ -15,6 +15,10 @@
     import GenPwModal from "$lib/components/GenPwModal.svelte";
     import Tooltip from "$lib/components/Tooltip.svelte";
     import FuzzySearch from 'fuzzy-search'
+    import ImportPwsModal from "$lib/components/ImportPwsModal.svelte";
+    import type {ImportedPassword} from "$lib/passwordImporter";
+    import ImportReportModal from "$lib/components/ImportReportModal.svelte";
+    import {exportToCsv} from "$lib/passwordImporter";
 
 
     let decryptedEntries = new Map<string, string>();
@@ -24,6 +28,8 @@
 
     let confirmModal: ConfirmModal;
     let genPwModal: GenPwModal;
+    let importPwsModal: ImportPwsModal;
+    let importReportModal: ImportReportModal;
 
     let dataLayer: DataLayer;
 
@@ -52,7 +58,6 @@
     }
 
     let vaultKeyInput: string | undefined;
-    let pazzView = 0;
 
     let addPazzLocation: string | undefined = undefined;
     let addPazzUser: string | undefined = undefined;
@@ -96,6 +101,23 @@
         entries = entries
     }
 
+    async function exportPasswords() {
+        const exportEntries = new Array<ImportedPassword>();
+        for (const entry of entries) {
+            exportEntries.push({
+                location: entry.location,
+                user: entry.user,
+                password: await decryptPasswordOnly(entry)
+            })
+        }
+        const content = exportToCsv(exportEntries);
+        const contentBuffer = (new TextEncoder()).encode(content);
+        const blob = new Blob([contentBuffer], { type: 'application/octet-stream' });
+        const link = document.createElement('a');
+        link.href = window.URL.createObjectURL(blob);
+        link.download = 'pazzwordz.pazz';
+        link.click();
+    }
     async function hideDecrypt(entry: PasswordEntryView) {
         decryptedEntries.delete(entry.id)
         decryptedEntries = decryptedEntries
@@ -142,10 +164,32 @@
         })
     }
 
+    async function onPasswordsImport(importedEntries: Array<ImportedPassword>) {
+        let duplicates = new Array<PasswordEntryView>();
+        const toAdd = new Array<ImportedPassword>();
+        for(const importedEntry of importedEntries) {
+            const foundEntry = entries.find((entry: PasswordEntryView) =>
+                entry.location == importedEntry.location
+            && entry.user == entry.user);
+            if(foundEntry) {
+                duplicates.push(foundEntry)
+            } else {
+                toAdd.push(importedEntry);
+            }
+        }
+
+        const added = await dataLayer.createPasswordEntries($usedVaultKeyStore!, toAdd)
+        entries = entries.concat(added);
+        if(duplicates.length > 0)
+            importReportModal.show(duplicates)
+    }
+
 </script>
 
 <ConfirmModal bind:this={confirmModal}/>
 <GenPwModal bind:this={genPwModal}/>
+<ImportPwsModal bind:this={importPwsModal}/>
+<ImportReportModal bind:this={importReportModal}/>
 <div class="w-full flex flex-col lg:flex-row gap-4 lg:p-8 h-[80vh]">
     <div class="lg:w-1/5 flex flex-col items-center gap-4">
         <a class="btn w-64 btn-outline flex gap-2 items-center" href={routes.cloud.cloud}>
@@ -158,13 +202,8 @@
         </a>
         <div class="flex flex-col gap-4 h-[75%] overflow-y-scroll no-scrollbar">
             <input class="input input-bordered w-64" placeholder="Search" bind:value={filterString}/>
-            <div class="join">
-                <button class="btn join-item pointer-events-none">View</button>
-                <select class="select select-bordered join-item w-full" bind:value={pazzView}>
-                    <option selected value={0}>List</option>
-                    <option value={1}>Cards</option>
-                </select>
-            </div>
+            <button class="btn" on:click={() => exportPasswords()}>Export</button>
+            <button class="btn" on:click={() => importPwsModal.show(onPasswordsImport)}>Import</button>
         </div>
         <form class="flex flex-col gap-4" on:submit={addPassword}>
             <p class="font-medium text-lg">Add Pazzword</p>
@@ -225,94 +264,78 @@
         {/if}
         <h2 class="text-4xl font-bold">Your Pazzwordz</h2>
         <div class="lg:h-[95%] overflow-y-scroll">
-            {#if pazzView === 0}
-                <table class="table table-zebra table-fixed mt-4">
-                    <thead>
+            <table class="table table-zebra table-fixed mt-4">
+                <thead>
+                <tr>
+                    <td>location</td>
+                    <td>User</td>
+                    <td>Password</td>
+                    <td></td>
+                </tr>
+                </thead>
+                <tbody>
+                {#each filteredEntries as entry}
                     <tr>
-                        <td>location</td>
-                        <td>User</td>
-                        <td>Password</td>
-                        <td></td>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {#each filteredEntries as entry}
-                        <tr>
-                            <td>
-                                {#if isValidHttpUrl(entry.location)}
-                                    <a class="break-words link link-hover" href="{entry.location}">{entry.location}</a>
-                                {:else}
-                                    <div class="break-words">{entry.location}</div>
-                                {/if}
-                            </td>
-                            <td class="flex gap-2 items-center">
-                                <span>{entry.user}</span>
-                                <Tooltip text="Copy" class="relative">
-                                    <button class="btn btn-xs btn-outline btn-square border-none"
-                                            on:click={() => copyToClipboard(entry.user)}>
-                                        <Fa icon={faCopy} class="stroke-current" size="lg"/>
-                                    </button>
-                                </Tooltip>
-                            </td>
-                            <td>
-                                {#if decryptedEntries.has(entry.id)}
-                                    <div class="flex gap-2 items-center">
-                                        <span class="break-words">{decryptedEntries.get(entry.id)}</span>
-                                    </div>
-                                {:else }
-                                    <div class="flex gap-2">
-                                        <div class="break-words">********</div>
-                                    </div>
-                                {/if}
-                            </td>
-                            <td>
-                                {#if decryptedEntries.has(entry.id)}
-                                    <Tooltip text="Decrypt">
-                                        <button class="btn btn-xs btn-outline btn-square border-none"
-                                                on:click={() => hideDecrypt(entry)}>
-                                            <Fa icon={faEyeSlash} class="stroke-current" size="lg"/>
-                                        </button>
-                                    </Tooltip>
-                                {:else}
-                                    <Tooltip text="Hide">
-                                        <button class="btn btn-xs btn-outline btn-square border-none"
-                                                on:click={() => showDecrypt(entry)}>
-                                            <Fa icon={faEye} class="stroke-current" size="lg"/>
-                                        </button>
-                                    </Tooltip>
-                                {/if}
-                                <Tooltip text="Copy">
-                                    <button class="btn btn-xs btn-outline btn-square border-none"
-                                            on:click={() => pwToClipboard(entry)}>
-                                        <Fa icon={faCopy} class="stroke-current" size="lg"/>
-                                    </button>
-                                </Tooltip>
-                                <Tooltip text="Delete">
-                                    <button class="btn btn-xs btn-outline btn-square border-none"
-                                            on:click={() => deleteEntry(entry)}>
-                                        <Fa icon={faTrash} class="stroke-current" color="#bf1313" size="lg"/>
-                                    </button>
-                                </Tooltip>
-                            </td>
-                        </tr>
-                    {/each}
-                    </tbody>
-                </table>
-            {:else if pazzView === 1}
-                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-4">
-                    {#each filteredEntries as entry}
-                        <div class="card w-full bg-base-100 shadow-xl">
-                            <div class="card-body">
-                                <div class="sm:text-lg break-words">{entry.location}</div>
-                                <p class=" text-sm sm:text-base">{entry.user}</p>
-                                <div class="card-actions justify-end text-sm sm:text-base">
-                                    <button class="btn btn-primary" on:click={() => showDecrypt(entry)}>Decrypt</button>
+                        <td>
+                            {#if isValidHttpUrl(entry.location)}
+                                <a class="break-words link link-hover" href="{entry.location}">{entry.location}</a>
+                            {:else}
+                                <div class="break-words">{entry.location}</div>
+                            {/if}
+                        </td>
+                        <td class="flex gap-2 items-center">
+                            <span>{entry.user}</span>
+                            <Tooltip text="Copy" class="relative">
+                                <button class="btn btn-xs btn-outline btn-square border-none"
+                                        on:click={() => copyToClipboard(entry.user)}>
+                                    <Fa icon={faCopy} class="stroke-current" size="lg"/>
+                                </button>
+                            </Tooltip>
+                        </td>
+                        <td>
+                            {#if decryptedEntries.has(entry.id)}
+                                <div class="flex gap-2 items-center">
+                                    <span class="break-words">{decryptedEntries.get(entry.id)}</span>
                                 </div>
-                            </div>
-                        </div>
-                    {/each}
-                </div>
-            {/if}
+                            {:else }
+                                <div class="flex gap-2">
+                                    <div class="break-words">********</div>
+                                </div>
+                            {/if}
+                        </td>
+                        <td>
+                            {#if decryptedEntries.has(entry.id)}
+                                <Tooltip text="Decrypt">
+                                    <button class="btn btn-xs btn-outline btn-square border-none"
+                                            on:click={() => hideDecrypt(entry)}>
+                                        <Fa icon={faEyeSlash} class="stroke-current" size="lg"/>
+                                    </button>
+                                </Tooltip>
+                            {:else}
+                                <Tooltip text="Hide">
+                                    <button class="btn btn-xs btn-outline btn-square border-none"
+                                            on:click={() => showDecrypt(entry)}>
+                                        <Fa icon={faEye} class="stroke-current" size="lg"/>
+                                    </button>
+                                </Tooltip>
+                            {/if}
+                            <Tooltip text="Copy">
+                                <button class="btn btn-xs btn-outline btn-square border-none"
+                                        on:click={() => pwToClipboard(entry)}>
+                                    <Fa icon={faCopy} class="stroke-current" size="lg"/>
+                                </button>
+                            </Tooltip>
+                            <Tooltip text="Delete">
+                                <button class="btn btn-xs btn-outline btn-square border-none"
+                                        on:click={() => deleteEntry(entry)}>
+                                    <Fa icon={faTrash} class="stroke-current" color="#bf1313" size="lg"/>
+                                </button>
+                            </Tooltip>
+                        </td>
+                    </tr>
+                {/each}
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
