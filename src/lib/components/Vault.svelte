@@ -200,7 +200,7 @@
 
     async function onSharePassword(entry: PasswordEntryView) {
         const passwordToShare = await decryptPasswordOnly(entry);
-        sharePwModal.show(passwordToShare)
+        sharePwModal.show(passwordToShare, entry.user, entry.location)
     }
 
 </script>

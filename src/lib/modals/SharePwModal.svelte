@@ -19,11 +19,15 @@
     type Callback = () => void;
 
     let password: string;
+    let user: string | undefined;
+    let location: string | undefined;
     let generatedLink: string | undefined;
+    let includeMetadata: boolean;
 
-
-    export function show(pw: string) {
+    export function show(pw: string, us: string, loc: string) {
         isModalOpen = true;
+        user = us;
+        location = loc
         password = pw;
     }
 
@@ -46,6 +50,8 @@
             expiresAt: new Date(Date.now() + expiresIn).toISOString()
         })
         generatedLink = `https://pazzwordz.io/share/password?id=${entryId}&key=${keyb64}`
+        if(includeMetadata)
+            generatedLink += `&user=${user}&location=${location}`
     }
 
     function copyLink() {
@@ -67,7 +73,9 @@
     <div class="modal-box ">
         <h3 class="font-bold text-lg">Share Password</h3>
         <p class="py-4">This will create a one time magic share link.</p>
+        <label>User/Location</label>
         {#if generatedLink == undefined}
+            <input type="checkbox" bind:checked={includeMetadata}/>
             <div class="join my-4">
                 <div class="btn join-item pointer-events-none">Expires In</div>
                 <select class="select select-bordered join-item w-48 lg:w-max" bind:value={expiresIn}>

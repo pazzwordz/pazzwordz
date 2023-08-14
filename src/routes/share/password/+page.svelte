@@ -41,7 +41,7 @@
             await dataLayer.createPasswordEntry($vaultKeyStoreCloud!, passwordText!, location, user);
             wasSavedToVault = true;
             toast.push("Added to vault", {theme: successToastTheme})
-        }, dataLayer)
+        }, dataLayer, data.pwUser, data.pwLocation)
     }
 </script>
 

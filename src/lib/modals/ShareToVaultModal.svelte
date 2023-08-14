@@ -16,10 +16,12 @@
 
     let vaultKeyInput: string | undefined = undefined;
 
-    export function show(cb: Callback, dl: DataLayerCloud) {
+    export function show(cb: Callback, dl: DataLayerCloud, pwUser: string | undefined, pwLocation: string | undefined) {
         isModalOpen = true;
         dataLayer = dl;
         callback = cb;
+        location = pwLocation;
+        user = pwUser;
     }
 
     function closeConfirm() {
