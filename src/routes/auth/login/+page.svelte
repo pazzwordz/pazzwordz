@@ -1,6 +1,6 @@
 <script lang="ts">
     import {get} from "svelte/store";
-    import type {PageData} from "./$types";
+    import type {PageData} from "../../../../.svelte-kit/types/src/routes";
     import {fingerprintStore} from "$lib/stores";
     import {routes} from "$lib/navRoutes";
     import {goto} from "$app/navigation";

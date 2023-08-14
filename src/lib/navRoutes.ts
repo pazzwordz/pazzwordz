@@ -8,9 +8,9 @@ export const routes = {
         cloudDevices: "/cloud/devices",
     },
     auth: {
-        login: "/login",
-        signUp: "/signup",
-        resetPassword: "/reset-password"
+        login: "/auth/login",
+        signUp: "/auth/signup",
+        resetPassword: "/auth/reset-password"
     },
     legal: {
         terms: "/legal/terms",
