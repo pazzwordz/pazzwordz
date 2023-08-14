@@ -5,12 +5,17 @@
     import Fa from "svelte-fa";
     import {decryptHex, deriveKey, encryptText} from "$lib/scripts/crypto";
     import {goto} from "$app/navigation";
-    import {routes} from "$lib/config";
+    import {routes, successToastTheme} from "$lib/config";
+    import ShareToVaultModal from "$lib/modals/ShareToVaultModal.svelte";
+    import {DataLayerCloud} from "$lib/persistent/DataLayer";
+    import {vaultKeyStoreCloud} from "$lib/stores";
+    import {toast} from "@zerodevx/svelte-toast";
 
     export let data;
+
+    let shareToVaultModal: ShareToVaultModal;
     let passwordText: string | undefined = undefined;
     let errorMessage: string | undefined = undefined;
-    let decrypted = false;
 
     function parse(text: string): Uint8Array | null {
         const obj = JSON.parse(text);
@@ -20,7 +25,6 @@
     }
 
     async function decryptPassword() {
-        decrypted = true;
         const response = await fetch(`/share/password/getencrypted?id=${data.id}`);
         if (response.ok) {
             const encrypted = await response.text();
@@ -30,10 +34,18 @@
         }
     }
 
+    let wasSavedToVault = false;
     async function saveToVault() {
-
+        const dataLayer = new DataLayerCloud(data.supabase, data.session!.user.id)
+        shareToVaultModal.show(async (location, user) => {
+            await dataLayer.createPasswordEntry($vaultKeyStoreCloud!, passwordText!, location, user);
+            wasSavedToVault = true;
+            toast.push("Added to vault", {theme: successToastTheme})
+        }, dataLayer)
     }
 </script>
+
+<ShareToVaultModal bind:this={shareToVaultModal}/>
 
 <h2 class="text-5xl font-bold text-center mt-8 mb-20 w-full">A Password was Shared with you</h2>
 {#if errorMessage != undefined}
@@ -52,19 +64,17 @@
         </div>
         {#if !data.session}
             <a class="link" href={routes.auth.login}>Login to save this password to your vault</a>
-            <button class="join-item btn btn-outline btn-success btn-lg"
-                    disabled={decrypted || passwordText == undefined} on:click={saveToVault}>Save To Vault
+            <button class="btn btn-success btn-lg" disabled={passwordText != undefined} on:click={decryptPassword}>
+                Decrypt
             </button>
         {:else}
             <div class="join justify-center">
-                <button class="join-item btn btn-success btn-lg" disabled={decrypted} on:click={decryptPassword}>
+                <button class="join-item btn btn-success btn-lg" disabled={passwordText != undefined} on:click={decryptPassword}>
                     Decrypt
                 </button>
-                {#if data.session}
-                    <button class="join-item btn btn-outline btn-success btn-lg"
-                            disabled={decrypted || passwordText == undefined} on:click={saveToVault}>Save To Vault
-                    </button>
-                {/if}
+                <button class="join-item btn btn-outline btn-success btn-lg"
+                        disabled={passwordText == undefined} on:click={saveToVault}>Save To Vault
+                </button>
             </div>
         {/if}
     </div>

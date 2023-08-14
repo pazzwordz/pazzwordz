@@ -247,7 +247,7 @@
     </div>
     <div class="divider divider-vertical lg:divider-horizontal"/>
     <div class="w-full relative">
-        {#if dataLayer != undefined}
+        {#if dataLayer}
             {#await dataLayer.isVaultKeyHashSet() then isSet}
                 {#if !isSet}
                     <div class="absolute top-0 left-0 bg-base-100/90 w-full h-full flex flex-col gap-8 items-center justify-center z-10 text-center">
