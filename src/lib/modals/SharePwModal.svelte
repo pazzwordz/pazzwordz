@@ -73,12 +73,14 @@
     <div class="modal-box ">
         <h3 class="font-bold text-lg">Share Password</h3>
         <p class="py-4">This will create a one time magic share link.</p>
-        <label>User/Location</label>
         {#if generatedLink == undefined}
-            <input type="checkbox" bind:checked={includeMetadata}/>
+            <label class="label cursor-pointer">
+                <span class="label-text">Attach User and Location</span>
+                <input type="checkbox" class="checkbox" bind:checked={includeMetadata}/>
+            </label>
             <div class="join my-4">
                 <div class="btn join-item pointer-events-none">Expires In</div>
-                <select class="select select-bordered join-item w-48 lg:w-max" bind:value={expiresIn}>
+                <select class="select select-bordered join-item w-max" bind:value={expiresIn}>
                     <option value={60000}>1 Minute</option>
                     <option selected value={3600000}>1 Hour (Today {timeFormatter(60 * 60 * 1000)})</option>
                     <option value={86400000}>24 Hours (Tomorrow {timeFormatter(60 * 60 * 24 * 1000)})</option>
