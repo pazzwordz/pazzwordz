@@ -32,6 +32,21 @@
         vaultKeyInput = undefined;
     }
 
+    async function saveToVault() {
+        const hasVault = await dataLayer.isVaultKeyHashSet();
+        if (hasVault) {
+            if (await unlockVault()) {
+                closeConfirm();
+            } else {
+                vaultKeyInput = undefined;
+                toast.push("Wrong Vault Key!", {theme: errorToastTheme});
+            }
+        } else {
+            await createVaultKey();
+            closeConfirm();
+        }
+    }
+
     function closeCancel() {
         isModalOpen = false;
         location = undefined;
@@ -42,7 +57,6 @@
     async function createVaultKey() {
         const hash = sha256HashHex(vaultKeyInput!);
         await dataLayer.setVaultKeyHash(hash);
-        vaultKeyInput = undefined;
         dataLayer = dataLayer
     }
 
@@ -50,53 +64,33 @@
         if (await dataLayer.isValidVaultKeyHash(sha256HashHex(vaultKeyInput!))) {
             const otp = dataLayer.generateOtpKey();
             setVaultKeyCloud(vaultKeyInput!, otp)
-        } else {
-            toast.push("Wrong Vault Key!", {theme: errorToastTheme});
+            return true
         }
-        vaultKeyInput = undefined;
+        return false
     }
 </script>
 
 <div class="modal" class:modal-open={isModalOpen}>
     <div class="modal-box">
-        <h3 class="font-bold text-lg">Add to Vault</h3>
-        {#if dataLayer}
-            {#await dataLayer.isVaultKeyHashSet() then isSet}
-                {#if !isSet}
-                    <div class="">
-                        <b class="text-4xl">Crete new vault key</b>
-                        <form class="join" on:submit={createVaultKey}>
-                            <div>
-                                <div>
-                                    <input class="input input-bordered join-item" bind:value={vaultKeyInput}
-                                           placeholder="Vault Key"/>
-                                </div>
-                            </div>
-                            <button class="btn join-item">Unlock</button>
-                        </form>
-                    </div>
-                {:else if $vaultKeyStoreCloud == null}
-                    <div class="">
-                        <b class="text-4xl">Unlock Vault</b>
-                        <form class="join" on:submit={unlockVault}>
-                            <div>
-                                <div>
-                                    <input class="input input-bordered join-item" bind:value={vaultKeyInput}
-                                           placeholder="Vault Key"/>
-                                </div>
-                            </div>
-                            <button class="btn join-item">Unlock</button>
-                        </form>
-                    </div>
-                {:else}
-                    <input class="input input-bordered" type="text" bind:value={location} placeholder="location"/>
-                    <input class="input input-bordered" type="text" bind:value={user} placeholder="name"/>
-                    <div class="modal-action">
-                        <button class="btn" on:click={closeCancel}>Cancel</button>
-                        <button class="btn" disabled={!location && !user} on:click={closeConfirm}>Add</button>
-                    </div>
-                {/if}
-            {/await}
-        {/if}
+        <h3 class="font-bold text-xl">Save to your Vault</h3>
+        <p class="my-4">Save this password to your cloud vault! Just enter your VaultKey as well as the Location and Name of the password.</p>
+        <form class="flex flex-col gap-4 pr-4" on:submit={saveToVault}>
+            <div class="join">
+                <span class="btn join-item pointer-events-none w-28">Vault Key</span>
+                <input class="input input-bordered join-item w-full" bind:value={vaultKeyInput} placeholder="Vault Key"/>
+            </div>
+            <div class="join">
+                <span class="btn join-item pointer-events-none w-28">Location</span>
+                <input class="input input-bordered join-item w-full" bind:value={location} placeholder="Location"/>
+            </div>
+            <div class="join">
+                <span class="btn join-item pointer-events-none w-28">Name</span>
+                <input class="input input-bordered join-item w-full" bind:value={user} placeholder="Name"/>
+            </div>
+            <div class="modal-action">
+                <button type="button" class="btn" on:click={closeCancel}>Cancel</button>
+                <button type="submit" class="btn btn-success btn-outline" disabled={!vaultKeyInput || !location || !user}>Save</button>
+            </div>
+        </form>
     </div>
 </div>
