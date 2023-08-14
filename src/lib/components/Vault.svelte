@@ -178,7 +178,6 @@
             const foundEntry = entries.find((entry: PasswordEntryView) =>
                 entry.location == importedEntry.location
                 && entry.user == entry.user);
-            console.log(importedEntry)
             if (foundEntry) {
                 console.log("found")
                 duplicates.push(foundEntry)

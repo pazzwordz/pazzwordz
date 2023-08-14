@@ -23,7 +23,6 @@
             const textDecoder = new TextDecoder('utf-8');
             const buffer = await file.arrayBuffer();
             content = textDecoder.decode(buffer);
-            console.log(content)
         } else {
             content =  await file!.text()
         }
