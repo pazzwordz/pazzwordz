@@ -193,8 +193,8 @@
     }
 
     async function onSharePassword(entry: PasswordEntryView) {
-        const playinTextYö = await decryptPasswordOnly(entry);
-        sharePwModal.show(playinTextYö)
+        const passwordToShare = await decryptPasswordOnly(entry);
+        sharePwModal.show(passwordToShare)
     }
 
 </script>
@@ -335,16 +335,16 @@
                                     <Fa icon={faCopy} class="stroke-current" size="lg"/>
                                 </button>
                             </Tooltip>
-                            <Tooltip text="Delete">
-                                <button class="btn btn-xs btn-outline btn-square border-none"
-                                        on:click={() => deleteEntry(entry)}>
-                                    <Fa icon={faTrash} class="stroke-current" color="#bf1313" size="lg"/>
-                                </button>
-                            </Tooltip>
                             <Tooltip text="Share">
                                 <button class="btn btn-xs btn-outline btn-square border-none"
                                         on:click={() => onSharePassword(entry)}>
                                     <Fa icon={faShare} class="stroke-current" size="lg"/>
+                                </button>
+                            </Tooltip>
+                            <Tooltip text="Delete">
+                                <button class="btn btn-xs btn-outline btn-square border-none"
+                                        on:click={() => deleteEntry(entry)}>
+                                    <Fa icon={faTrash} class="stroke-current text-error" size="lg"/>
                                 </button>
                             </Tooltip>
                         </td>

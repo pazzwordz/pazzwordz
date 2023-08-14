@@ -5,15 +5,16 @@
     import type {DataLayer} from "$lib/persistent/DataLayer";
     import {deriveKey, encryptText} from "$lib/crypto";
     import Fa from "svelte-fa";
-    import {faClipboard, faShare} from "@fortawesome/free-solid-svg-icons";
+    import {faClipboard, faKey, faShare} from "@fortawesome/free-solid-svg-icons";
     import {copyToClipboard} from "$lib/functions";
+    import Tooltip from "$lib/components/Tooltip.svelte";
 
     let isModalOpen = false
 
 
     export let supabase: SupabaseClient<Database>;
     export let userId: string;
-    let expiresIn: number = 60 * 60 * 1000;
+    let expiresIn: number = 3600000;
 
     type Callback = () => void;
 
@@ -63,22 +64,43 @@
 </script>
 
 <div class="modal" class:modal-open={isModalOpen}>
-    <div class="modal-box">
+    <div class="modal-box ">
         <h3 class="font-bold text-lg">Share Password</h3>
-        <div>This will create a one time magic share link</div>
+        <p class="py-4">This will create a one time magic share link.</p>
         {#if generatedLink == undefined}
-            <select>
-                <option>in 1 Minute</option>
-                <option>Today {timeFormatter(60 * 60 * 1000)}</option>
-                <option>Tomorrow {timeFormatter(60 * 60 * 24 * 1000)}</option>
-            </select>
-            <button class="btn" on:click={onCreateLink}>Create</button>
+            <div class="join my-4">
+                <div class="btn join-item pointer-events-none">Expires In</div>
+                <select class="select select-bordered join-item w-48 lg:w-max" bind:value={expiresIn}>
+                    <option value={60000}>1 Minute</option>
+                    <option selected value={3600000}>1 Hour (Today {timeFormatter(60 * 60 * 1000)})</option>
+                    <option value={86400000}>24 Hours (Tomorrow {timeFormatter(60 * 60 * 24 * 1000)})</option>
+                </select>
+            </div>
         {:else}
-            <div class="bg-base-200">{generatedLink}</div>
-            <Fa icon={faClipboard} on:click={copyLink}></Fa>
+            <div class="join">
+                <input class="input input-bordered join-item lg:w-80" bind:value={generatedLink}/>
+                <button class="btn join-item" on:click={() => copyToClipboard(generatedLink+"")}>
+                    <Fa icon={faClipboard}/>
+                    Copy Link
+                </button>
+            </div>
+            <!--            <div class="join">-->
+            <!--                <input class=" join-item input bg-base-200 input-bordered w-full" placeholder="Password" bind:value={generatedLink}/>-->
+            <!--                <Tooltip text="Generate Password" class="">-->
+            <!--                    <button type="button" class="btn btn-md btn-square join-item" on:click={() => copyToClipboard(generatedLink)}>-->
+            <!--                        <Fa icon={faClipboard} class="stroke-current"/>-->
+            <!--                    </button>-->
+            <!--                </Tooltip>-->
+            <!--            </div>-->
+            <!--            <div class="bg-base-200 line-clamp-2 p-1">{generatedLink}</div>-->
         {/if}
         <div class="modal-action">
-            <button class="btn" on:click={close}>Cancel</button>
+            {#if generatedLink == undefined}
+                <button class="btn" on:click={close}>Cancel</button>
+                <button class="btn btn-outline btn-info" on:click={onCreateLink}>Get Link</button>
+            {:else }
+                <button class="btn btn-outline" on:click={close}>Done</button>
+            {/if}
         </div>
     </div>
 </div>
