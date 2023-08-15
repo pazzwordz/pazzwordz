@@ -3,7 +3,7 @@
     <meta name="description" content="Learn about the terms of service on pazzwordz.io and how we manage user data.">
     <meta name="keywords" content="pazzwordz.io, terms of service,terms,  data privacy, user information">
 </svelte:head>
-<div class="max-w-[50vw] text-justify leading-loose">
+<div class="lg:max-w-[50vw] text-justify leading-loose">
     <h1 class="text-4xl font-bold my-4">Terms of Service</h1>
     <b>Effective Date: 12 August 2023</b>
     <p class="mb-8">
