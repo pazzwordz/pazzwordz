@@ -12,6 +12,7 @@
     export let data: PageData;
 
     let confirmModal: ConfirmModal
+    let locked = false;
 
     function getUserId() {
         return data.session!.user.id;
@@ -31,7 +32,8 @@
     onMount(async () => {
         const userId = data.session!.user.id;
         const userData = await getUserData(data.supabase, userId)
-        if(!userData.premium && data.mainFingerprint != $fingerprintStore) {
+        if (!userData.premium && data.mainFingerprint != $fingerprintStore) {
+            locked = true
             showLockedModal();
         }
     })
@@ -40,4 +42,6 @@
     <title>Pazzwordz | Vault</title>
 </svelte:head>
 <ConfirmModal bind:this={confirmModal}/>
-<Vault supabase={data.supabase} userId={getUserId()} hasPremium={data.hasPremium} isCloud={true}/>
+{#if !locked}
+    <Vault supabase={data.supabase} userId={getUserId()} hasPremium={data.hasPremium} isCloud={true}/>
+{/if}
