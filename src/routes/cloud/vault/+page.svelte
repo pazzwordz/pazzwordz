@@ -31,12 +31,9 @@
     onMount(async () => {
         const userId = data.session!.user.id;
         const userData = await getUserData(data.supabase, userId)
-        if(userData.premium)
-            return;
-        const mainDevice = await getUserMainDevice(data.supabase, userId);
-        const currentDevice = await getDeviceByFingerprint(data.supabase, userId, $fingerprintStore)
-        if(mainDevice!.id == currentDevice!.id)
+        if(!userData.premium && data.mainFingerprint != $fingerprintStore) {
             showLockedModal();
+        }
     })
 </script>
 <svelte:head>
