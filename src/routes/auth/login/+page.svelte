@@ -7,6 +7,7 @@
     import {successToastTheme} from "$lib/config";
     import type {SupabaseClient} from "@supabase/supabase-js";
     import type {Database} from "$lib/database.types"
+    import {getDeviceByFingerprint} from "$lib/scripts/functions";
 
     export let data: PageData;
 
@@ -20,12 +21,6 @@
         return Object.fromEntries(arr)
     }
 
-    async function getDeviceByFingerprint(userId: string, fingerpint: string) {
-        const supabase: SupabaseClient<Database> = data.supabase;
-        const response = await supabase.from("DeviceEntry").select("*").eq("userId", userId)
-            .eq("fingerprint", fingerpint).single();
-        return response.data;
-    }
 
 
     async function handleLogin() {
@@ -43,7 +38,7 @@
 
         const userId = response.data.user!.id;
 
-        let thisDevice = await getDeviceByFingerprint(userId, $fingerprintStore)
+        let thisDevice = await getDeviceByFingerprint(supabase, userId, $fingerprintStore)
         if(!thisDevice) {
             const deviceInsertRes = await supabase.from("DeviceEntry").insert({
                 userId: userId,
@@ -52,10 +47,8 @@
             }).select("*").single();
             thisDevice = deviceInsertRes.data!;
         }
-
         const userDataRes = await supabase.from("UserData").select().eq("userId", userId).single();
         const userData = userDataRes.data!;
-        console.log("userdata " + userData)
         if(!userData.mainDeviceId) {
             await supabase.from("UserData").update({
                 mainDeviceId: thisDevice.id
