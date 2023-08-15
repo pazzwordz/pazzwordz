@@ -19,7 +19,17 @@
         const res = await data.supabase.from("DeviceEntry").select("*")
         const passwordEntries = res.data!
         mainDevice = await getMainDevice(passwordEntries);
-        entries = passwordEntries;
+        entries = passwordEntries.sort(sortByMainDevice);
+    }
+
+    function sortByMainDevice(a: DeviceEntry, b: DeviceEntry) {
+        if (a.id == mainDevice.id) {
+            return -1;
+        } else if (b.id == mainDevice.id) {
+            return 1;
+        } else {
+            return 0;
+        }
     }
 
     async function getMainDevice(entries: Array<DeviceEntry>) {
@@ -47,7 +57,12 @@
             <span>Back</span>
         </a>
         {#each entries as device, i}
-            <button class="btn w-64" on:click={() => {selectedDevice = device}}>Device {i}</button>
+            <button class="btn w-64" on:click={() => {selectedDevice = device}}>
+                {#if i == 0}
+                    Main Daddy
+                {/if}
+                Device {i}
+            </button>
         {/each}
     </div>
     <div class="divider divider-vertical lg:divider-horizontal"/>
