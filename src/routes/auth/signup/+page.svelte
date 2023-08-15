@@ -33,8 +33,7 @@
         }
         const user = response.data!.user;
         const newId = user.id;
-        goto("/login")
-
+        await goto(routes.auth.login)
     }
 </script>
 <svelte:head>
