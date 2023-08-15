@@ -255,7 +255,7 @@
                         <form class="join" on:submit={createVaultKey}>
                             <div>
                                 <div>
-                                    <input class="input input-bordered join-item" bind:value={vaultKeyInput}
+                                    <input class="input input-bordered join-item" type="password" bind:value={vaultKeyInput}
                                            placeholder="Vault Key"/>
                                 </div>
                             </div>
@@ -268,7 +268,7 @@
                         <form class="join" on:submit={unlockVault}>
                             <div>
                                 <div>
-                                    <input class="input input-bordered join-item" bind:value={vaultKeyInput}
+                                    <input class="input input-bordered join-item" type="password" bind:value={vaultKeyInput}
                                            placeholder="Vault Key"/>
                                 </div>
                             </div>

@@ -77,7 +77,7 @@
         <form class="flex flex-col gap-4 pr-4" on:submit={saveToVault}>
             <div class="join">
                 <span class="btn join-item pointer-events-none w-28">Vault Key</span>
-                <input class="input input-bordered join-item w-full" bind:value={vaultKeyInput} placeholder="Vault Key"/>
+                <input class="input input-bordered join-item w-full" type="password" bind:value={vaultKeyInput} placeholder="Vault Key"/>
             </div>
             <div class="join">
                 <span class="btn join-item pointer-events-none w-28">Location</span>
