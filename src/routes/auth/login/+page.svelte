@@ -1,11 +1,13 @@
 <script lang="ts">
     import {get} from "svelte/store";
-    import type {PageData} from "../../../../.svelte-kit/types/src/routes";
     import {fingerprintStore} from "$lib/stores";
     import {routes} from "$lib/config";
     import {goto} from "$app/navigation";
     import {toast} from "@zerodevx/svelte-toast";
     import {successToastTheme} from "$lib/config";
+    import type {SupabaseClient} from "@supabase/supabase-js";
+    import type {Database} from "$lib/database.types"
+    import {getDeviceByFingerprint} from "$lib/scripts/functions";
 
     export let data: PageData;
 
@@ -19,8 +21,11 @@
         return Object.fromEntries(arr)
     }
 
+
+
     async function handleLogin() {
         let device_data = await getCloudflareJSON();
+        const supabase: SupabaseClient<Database> = data.supabase;
         const response = await data.supabase.auth.signInWithPassword({
             email,
             password,
@@ -31,11 +36,24 @@
             return;
         }
 
-        const deviceUpdate = await data.supabase.from("DeviceEntry").upsert({
-            userId: response.data.user!.id,
-            fingerprint: $fingerprintStore,
-            data: device_data
-        })
+        const userId = response.data.user!.id;
+
+        let thisDevice = await getDeviceByFingerprint(supabase, userId, $fingerprintStore)
+        if(!thisDevice) {
+            const deviceInsertRes = await supabase.from("DeviceEntry").insert({
+                userId: userId,
+                fingerprint: $fingerprintStore,
+                data: device_data
+            }).select("*").single();
+            thisDevice = deviceInsertRes.data!;
+        }
+        const userDataRes = await supabase.from("UserData").select().eq("userId", userId).single();
+        const userData = userDataRes.data!;
+        if(!userData.mainDeviceId) {
+            await supabase.from("UserData").update({
+                mainDeviceId: thisDevice.id
+            }).eq("userId", userId)
+        }
 
         toast.push("Signed In", {theme: successToastTheme});
 

@@ -3,7 +3,7 @@
     <meta name="description" content="Learn about the privacy policy on pazzwordz.io and how we manage user data.">
     <meta name="keywords" content="pazzwordz.io, cookies, data privacy, user information, privacy policy">
 </svelte:head>
-<div class="max-w-[50vw] text-justify leading-loose">
+<div class="lg:max-w-[50vw] text-justify leading-loose">
     <h1 class="text-4xl font-bold my-4">Privacy Policy</h1>
     <b>Effective Date: 12 August 2023</b>
     <p class="mb-8">

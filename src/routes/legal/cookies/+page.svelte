@@ -3,7 +3,7 @@
     <meta name="description" content="Learn about the use of cookies on pazzwordz.io and how we manage user data.">
     <meta name="keywords" content="pazzwordz.io, cookies, data privacy, user information, cookie policy">
 </svelte:head>
-<div class="max-w-[50vw] text-justify leading-loose">
+<div class="lg:max-w-[50vw] text-justify leading-loose">
     <h1 class="text-4xl font-bold my-4">Cookies</h1>
     <b>Effective Date: 12 August 2023</b>
     <p class="mb-8">

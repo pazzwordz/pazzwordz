@@ -3,10 +3,12 @@
     import {routes} from "$lib/config";
     import type {Row} from "$lib/types";
     import {onMount} from "svelte";
+    import {fingerprintStore} from "$lib/stores";
 
     type DeviceEntry = Row<"DeviceEntry">
     export let data: PageData;
     let entries = new Array<DeviceEntry>;
+    let mainDeviceId: string;
     let selectedDevice: DeviceEntry;
 
     onMount(() => {
@@ -15,8 +17,14 @@
 
     async function refreshEntries() {
         entries = new Array<DeviceEntry>();
-        const {data: passwordEntries} = await data.supabase.from("DeviceEntry").select("*")
-        entries = passwordEntries!;
+        const res = await data.supabase.from("DeviceEntry").select("*")
+        entries = res.data!
+        mainDeviceId = await getMainDeviceId();
+    }
+
+    async function getMainDeviceId() {
+        const res = await data.supabase.from("UserData").select("mainDeviceId").single();
+        return res.data!.mainDeviceId!;
     }
 
     function getDeviceData(device: DeviceEntry) {
@@ -38,7 +46,27 @@
             <span>Back</span>
         </a>
         {#each entries as device, i}
-            <button class="btn w-64" on:click={() => {selectedDevice = device}}>Device {i}</button>
+            {#if device.id == mainDeviceId}
+                <div class="indicator">
+                    <span class="indicator-item badge badge-primary">main</span>
+                    <button class="btn w-64" on:click={() => {selectedDevice = device}}>
+                        Device {i}
+                    </button>
+                </div>
+            {:else }
+                {#if device.fingerprint === $fingerprintStore}
+                    <div class="indicator">
+                        <span class="indicator-item badge badge-secondary">current</span>
+                        <button class="btn w-64" on:click={() => {selectedDevice = device}}>
+                            Device {i}
+                        </button>
+                    </div>
+                {:else }
+                    <button class="btn w-64" on:click={() => {selectedDevice = device}}>
+                        Device {i}
+                    </button>
+                {/if}
+            {/if}
         {/each}
     </div>
     <div class="divider divider-vertical lg:divider-horizontal"/>
