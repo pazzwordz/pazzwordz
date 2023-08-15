@@ -57,12 +57,18 @@
             <span>Back</span>
         </a>
         {#each entries as device, i}
-            <button class="btn w-64" on:click={() => {selectedDevice = device}}>
-                {#if i == 0}
-                    Main Daddy
-                {/if}
-                Device {i}
-            </button>
+            {#if i == 0}
+                <div class="indicator">
+                    <span class="indicator-item badge badge-primary">main</span>
+                    <button class="btn w-64" on:click={() => {selectedDevice = device}}>
+                        Device {i}
+                    </button>
+                </div>
+            {:else }
+                <button class="btn w-64" on:click={() => {selectedDevice = device}}>
+                    Device {i}
+                </button>
+            {/if}
         {/each}
     </div>
     <div class="divider divider-vertical lg:divider-horizontal"/>
