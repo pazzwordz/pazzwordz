@@ -3,11 +3,12 @@
     import {routes} from "$lib/config";
     import type {Row} from "$lib/types";
     import {onMount} from "svelte";
+    import {fingerprintStore} from "$lib/stores";
 
     type DeviceEntry = Row<"DeviceEntry">
     export let data: PageData;
     let entries = new Array<DeviceEntry>;
-    let mainDevice: DeviceEntry;
+    let mainDeviceId: string;
     let selectedDevice: DeviceEntry;
 
     onMount(() => {
@@ -17,25 +18,13 @@
     async function refreshEntries() {
         entries = new Array<DeviceEntry>();
         const res = await data.supabase.from("DeviceEntry").select("*")
-        const passwordEntries = res.data!
-        mainDevice = await getMainDevice(passwordEntries);
-        entries = passwordEntries.sort(sortByMainDevice);
+        entries = res.data!
+        mainDeviceId = await getMainDeviceId();
     }
 
-    function sortByMainDevice(a: DeviceEntry, b: DeviceEntry) {
-        if (a.id == mainDevice.id) {
-            return -1;
-        } else if (b.id == mainDevice.id) {
-            return 1;
-        } else {
-            return 0;
-        }
-    }
-
-    async function getMainDevice(entries: Array<DeviceEntry>) {
+    async function getMainDeviceId() {
         const res = await data.supabase.from("UserData").select("mainDeviceId").single();
-        const mainDeviceId = res.data!.mainDeviceId;
-        return entries.find((entry) => entry.id == mainDeviceId)!
+        return res.data!.mainDeviceId!;
     }
 
     function getDeviceData(device: DeviceEntry) {
@@ -57,7 +46,7 @@
             <span>Back</span>
         </a>
         {#each entries as device, i}
-            {#if i == 0}
+            {#if device.id == mainDeviceId}
                 <div class="indicator">
                     <span class="indicator-item badge badge-primary">main</span>
                     <button class="btn w-64" on:click={() => {selectedDevice = device}}>
@@ -65,9 +54,18 @@
                     </button>
                 </div>
             {:else }
-                <button class="btn w-64" on:click={() => {selectedDevice = device}}>
-                    Device {i}
-                </button>
+                {#if device.fingerprint === $fingerprintStore}
+                    <div class="indicator">
+                        <span class="indicator-item badge badge-secondary">current</span>
+                        <button class="btn w-64" on:click={() => {selectedDevice = device}}>
+                            Device {i}
+                        </button>
+                    </div>
+                {:else }
+                    <button class="btn w-64" on:click={() => {selectedDevice = device}}>
+                        Device {i}
+                    </button>
+                {/if}
             {/if}
         {/each}
     </div>

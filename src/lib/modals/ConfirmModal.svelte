@@ -22,7 +22,7 @@
     }
 
     export function show(onConfirm: Callback, params?: any, options?: Partial<Options>) {
-        thisOptions = {...options, ...thisOptions}
+        thisOptions = { ...thisOptions, ...options}
         isModalOpen = true;
         thisOnConfirm = onConfirm;
         thisParams = params
