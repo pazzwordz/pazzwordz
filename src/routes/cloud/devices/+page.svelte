@@ -7,6 +7,7 @@
     type DeviceEntry = Row<"DeviceEntry">
     export let data: PageData;
     let entries = new Array<DeviceEntry>;
+    let mainDevice: DeviceEntry;
     let selectedDevice: DeviceEntry;
 
     onMount(() => {
@@ -15,8 +16,16 @@
 
     async function refreshEntries() {
         entries = new Array<DeviceEntry>();
-        const {data: passwordEntries} = await data.supabase.from("DeviceEntry").select("*")
-        entries = passwordEntries!;
+        const res = await data.supabase.from("DeviceEntry").select("*")
+        const passwordEntries = res.data!
+        mainDevice = await getMainDevice(passwordEntries);
+        entries = passwordEntries;
+    }
+
+    async function getMainDevice(entries: Array<DeviceEntry>) {
+        const res = await data.supabase.from("UserData").select("mainDeviceId").single();
+        const mainDeviceId = res.data!.mainDeviceId;
+        return entries.find((entry) => entry.id == mainDeviceId)!
     }
 
     function getDeviceData(device: DeviceEntry) {

@@ -56,9 +56,9 @@
         const userDataRes = await supabase.from("UserData").select().eq("userId", userId).single();
         const userData = userDataRes.data!;
         console.log("userdata " + userData)
-        if(!userData.mainDevice) {
+        if(!userData.mainDeviceId) {
             await supabase.from("UserData").update({
-                mainDevice: thisDevice.id
+                mainDeviceId: thisDevice.id
             }).eq("userId", userId)
         }
 
